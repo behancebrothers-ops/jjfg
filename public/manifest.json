@@ -1,0 +1,71 @@
+{
+  "name": "LUXEES Premium Fashion",
+  "short_name": "LUXEES",
+  "description": "Discover timeless pieces that define modern elegance. Shop premium fashion clothing, designer accessories, and new arrivals at LUXEES.",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": [
+    "shopping",
+    "lifestyle",
+    "fashion"
+  ],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Shop All Products",
+      "short_name": "Products",
+      "description": "Browse all fashion products",
+      "url": "/products",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "New Arrivals",
+      "short_name": "New",
+      "description": "Check out the latest arrivals",
+      "url": "/new-arrivals",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Sale Items",
+      "short_name": "Sale",
+      "description": "Shop sale items",
+      "url": "/sale",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

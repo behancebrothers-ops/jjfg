@@ -1,26 +1,261 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>Lovable App</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
 
-    <!-- TODO: Update og:title to match your application name -->
-    <meta property="og:title" content="Lovable App" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUXEES - Premium Fashion Store | Shop Luxury Clothing & Accessories</title>
+  <meta name="description"
+    content="Discover timeless pieces that define modern elegance. Shop premium fashion clothing, designer accessories, and new arrivals at LUXEES. Free shipping on orders over PKR 3000." />
+  <meta name="keywords"
+    content="luxury fashion, premium clothing, designer accessories, men's fashion, women's fashion, kids fashion, shoes, new arrivals, sale, online fashion store Pakistan" />
+  <meta name="author" content="LUXEES Premium Fashion" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow" />
+  <link rel="canonical" href="https://luxee-store.vercel.app/" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+  <!-- Google Site Verification -->
+  <meta name="google-site-verification" content="google770ad9101bf070b7" />
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <!-- Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
+  <!-- Preload critical assets for LCP optimization -->
+  <link rel="preload" as="image" href="/assets/hero-banner-BXWkFNj9.jpg" fetchpriority="high" />
+
+  <!-- DNS Prefetch for external resources -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://kgybyezbeeivbqwqaijg.supabase.co" />
+
+  <!-- Preconnect to critical origins -->
+  <link rel="preconnect" href="https://kgybyezbeeivbqwqaijg.supabase.co" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Preload font file to reduce render blocking -->
+  <link rel="preload" as="font" type="font/woff2"
+    href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"
+    media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet" />
+  </noscript>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8ET9035WN0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-8ET9035WN0');
+  </script>
+
+  <!-- Sitemap -->
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="LUXEES" />
+  <meta name="theme-color" content="#f59e0b" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="LUXEES Premium Fashion" />
+  <meta property="og:title" content="LUXEES - Premium Fashion Store | Shop Luxury Clothing" />
+  <meta property="og:description"
+    content="Discover timeless pieces that define modern elegance. Shop premium fashion clothing and accessories at LUXEES. Free shipping on orders over PKR 3000." />
+  <meta property="og:url" content="https://luxee-store.vercel.app/" />
+  <meta property="og:image" content="https://luxee-store.vercel.app/assets/hero-banner-BXWkFNj9.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="LUXEES Premium Fashion Store" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@luxeesfashion" />
+  <meta name="twitter:creator" content="@luxeesfashion" />
+  <meta name="twitter:title" content="LUXEES - Premium Fashion Store" />
+  <meta name="twitter:description"
+    content="Discover timeless pieces that define modern elegance. Shop premium fashion clothing and accessories at LUXEES." />
+  <meta property="twitter:url" content="https://luxee-store.vercel.app/" />
+  <meta name="twitter:image" content="https://luxee-store.vercel.app/assets/hero-banner-BXWkFNj9.jpg" />
+  <meta name="twitter:image:alt" content="LUXEES Premium Fashion Store" />
+
+  <!-- Structured Data - ClothingStore -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ClothingStore",
+      "@id": "https://luxee-store.vercel.app/#organization",
+      "name": "LUXEES Premium Fashion",
+      "description": "Discover timeless pieces that define modern elegance. Premium fashion clothing and accessories.",
+      "url": "https://luxee-store.vercel.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://luxee-store.vercel.app/assets/hero-banner-BXWkFNj9.jpg",
+        "width": 1200,
+        "height": 630
+      },
+      "image": "https://luxee-store.vercel.app/assets/hero-banner-BXWkFNj9.jpg",
+      "priceRange": "$$",
+      "currenciesAccepted": "PKR",
+      "paymentAccepted": "Credit Card, Debit Card, Cash on Delivery",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Fashion Avenue",
+        "addressLocality": "Lahore",
+        "addressRegion": "Punjab",
+        "postalCode": "54000",
+        "addressCountry": "PK"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 31.5204,
+        "longitude": 74.3587
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+92-300-LUXEES",
+        "contactType": "customer service",
+        "email": "contact@luxees.com",
+        "availableLanguage": ["English", "Urdu"]
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "sameAs": [
+        "https://facebook.com/luxeesfashion",
+        "https://instagram.com/luxeesfashion",
+        "https://twitter.com/luxeesfashion",
+        "https://pinterest.com/luxeesfashion"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "LUXEES Fashion Collection",
+        "itemListElement": [
+          {
+            "@type": "OfferCatalog",
+            "name": "Men's Fashion",
+            "itemListElement": {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Product",
+                "name": "Men's Clothing"
+              }
+            }
+          },
+          {
+            "@type": "OfferCatalog",
+            "name": "Women's Fashion",
+            "itemListElement": {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Product",
+                "name": "Women's Clothing"
+              }
+            }
+          },
+          {
+            "@type": "OfferCatalog",
+            "name": "Kids Fashion",
+            "itemListElement": {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Product",
+                "name": "Kids Clothing"
+              }
+            }
+          },
+          {
+            "@type": "OfferCatalog",
+            "name": "Accessories",
+            "itemListElement": {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Product",
+                "name": "Fashion Accessories"
+              }
+            }
+          }
+        ]
+      }
+    }
+    </script>
+
+  <!-- Structured Data - WebSite with SearchAction -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://luxee-store.vercel.app/#website",
+      "name": "LUXEES Premium Fashion",
+      "url": "https://luxee-store.vercel.app",
+      "description": "Premium fashion clothing and accessories store",
+      "publisher": {
+        "@id": "https://luxee-store.vercel.app/#organization"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://luxee-store.vercel.app/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "inLanguage": "en-US"
+    }
+    </script>
+
+  <!-- Structured Data - BreadcrumbList -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://luxee-store.vercel.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Products",
+          "item": "https://luxee-store.vercel.app/products"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "New Arrivals",
+          "item": "https://luxee-store.vercel.app/new-arrivals"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Sale",
+          "item": "https://luxee-store.vercel.app/sale"
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

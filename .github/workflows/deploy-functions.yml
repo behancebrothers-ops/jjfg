@@ -1,0 +1,50 @@
+name: Deploy Edge Functions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'supabase/functions/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Validate Secrets
+        run: |
+          MISSING_SECRETS=()
+          [ -z "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ] && MISSING_SECRETS+=("SUPABASE_ACCESS_TOKEN")
+          [ -z "${{ secrets.SUPABASE_PROJECT_ID }}" ] && MISSING_SECRETS+=("SUPABASE_PROJECT_ID")
+          [ -z "${{ secrets.RESEND_API_KEY }}" ] && MISSING_SECRETS+=("RESEND_API_KEY")
+          
+          if [ ${#MISSING_SECRETS[@]} -ne 0 ]; then
+            echo "::error::Missing required secrets: ${MISSING_SECRETS[*]}"
+            exit 1
+          fi
+
+      - name: Set Secrets
+        run: |
+          supabase secrets set --project-ref ${{ secrets.SUPABASE_PROJECT_ID }} \
+            STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} \
+            STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }} \
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }} \
+            UPSTASH_REDIS_REST_URL=${{ secrets.UPSTASH_REDIS_REST_URL }} \
+            UPSTASH_REDIS_REST_TOKEN=${{ secrets.UPSTASH_REDIS_REST_TOKEN }} \
+            ALLOWED_ORIGINS=${{ secrets.ALLOWED_ORIGINS }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - name: Deploy Edge Functions
+        run: supabase functions deploy --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
