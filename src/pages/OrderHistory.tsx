@@ -29,7 +29,7 @@ interface Order {
   order_number: string;
   created_at: string;
   status: string;
-  total_amount: number;
+  total: number;
   order_items: OrderItem[];
 }
 
@@ -279,7 +279,7 @@ const OrderHistory = () => {
                         <div>
                           <p className="text-sm text-muted-foreground mb-1">Total Amount</p>
                           <p className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
-                            ${order.total_amount.toFixed(2)}
+                            ${order.total.toFixed(2)}
                           </p>
                         </div>
                         <div className="flex gap-3 w-full sm:w-auto">

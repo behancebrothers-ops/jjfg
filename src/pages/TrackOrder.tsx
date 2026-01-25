@@ -67,17 +67,7 @@ const TrackOrder = () => {
         return;
       }
 
-      // Fetch shipment data if available
-      const { data: shipment } = await supabase
-        .from("shipments")
-        .select("*")
-        .eq("order_id", order.id)
-        .maybeSingle();
-
-      setOrderData({
-        ...order,
-        shipment,
-      });
+      setOrderData(order);
     } catch (error) {
       console.error("Error tracking order:", error);
       toast({
@@ -142,6 +132,9 @@ const TrackOrder = () => {
     }
   };
 
+  // Parse shipping address from JSON
+  const shippingAddress = orderData?.shipping_address as Record<string, string> | null;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -193,7 +186,7 @@ const TrackOrder = () => {
 
           {orderData && (
             <>
-              <Card>
+              <Card className="mb-4">
                 <CardHeader>
                   <CardTitle>Order Status</CardTitle>
                 </CardHeader>
@@ -215,7 +208,7 @@ const TrackOrder = () => {
                     </div>
 
                     {/* Tracking Information */}
-                    {(orderData.tracking_number || orderData.shipment?.tracking_number) && (
+                    {orderData.tracking_number && (
                       <div className="border rounded-lg p-4 bg-muted/50">
                         <div className="flex items-center gap-2 mb-2">
                           <Truck className="h-5 w-5 text-primary" />
@@ -223,14 +216,9 @@ const TrackOrder = () => {
                         </div>
                         <p className="text-sm text-muted-foreground mb-1">
                           Tracking Number: <span className="font-mono font-medium text-foreground">
-                            {orderData.tracking_number || orderData.shipment?.tracking_number}
+                            {orderData.tracking_number}
                           </span>
                         </p>
-                        {orderData.shipment?.carrier && (
-                          <p className="text-sm text-muted-foreground">
-                            Carrier: <span className="font-medium text-foreground">{orderData.shipment.carrier}</span>
-                          </p>
-                        )}
                       </div>
                     )}
 
@@ -316,7 +304,7 @@ const TrackOrder = () => {
               </Card>
 
               {/* Order Items */}
-              <Card>
+              <Card className="mb-4">
                 <CardHeader>
                   <CardTitle>Order Items</CardTitle>
                 </CardHeader>
@@ -340,28 +328,30 @@ const TrackOrder = () => {
                     ))}
                     <div className="flex justify-between items-center pt-4 border-t font-semibold">
                       <span>Total Amount</span>
-                      <span className="text-lg">${orderData.total_amount.toFixed(2)}</span>
+                      <span className="text-lg">${orderData.total?.toFixed(2) || '0.00'}</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Shipping Address */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Shipping Address</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm space-y-1">
-                    <p>{orderData.shipping_address_line1}</p>
-                    {orderData.shipping_address_line2 && <p>{orderData.shipping_address_line2}</p>}
-                    <p>
-                      {orderData.shipping_city}, {orderData.shipping_state} {orderData.shipping_postal_code}
-                    </p>
-                    <p>{orderData.shipping_country}</p>
-                  </div>
-                </CardContent>
-              </Card>
+              {shippingAddress && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Shipping Address</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm space-y-1">
+                      <p>{shippingAddress.address || shippingAddress.line1}</p>
+                      {shippingAddress.line2 && <p>{shippingAddress.line2}</p>}
+                      <p>
+                        {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postal_code || shippingAddress.postalCode}
+                      </p>
+                      <p>{shippingAddress.country}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </>
           )}
         </div>
