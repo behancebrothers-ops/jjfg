@@ -1,23 +1,21 @@
 export interface Order {
   id: string;
-  user_id: string;
+  user_id: string | null;
   order_number: string;
-  status: OrderStatus;
-  total_amount: number;
-  subtotal: number | null;
-  shipping_cost: number | null;
-  tax_amount: number | null;
-  discount_amount: number | null;
-  discount_code_id: string | null;
-  shipping_method_id: string | null;
-  shipping_address_line1: string;
-  shipping_address_line2: string | null;
-  shipping_city: string;
-  shipping_state: string;
-  shipping_postal_code: string;
-  shipping_country: string;
+  status: string;
+  total: number;
+  subtotal: number;
+  shipping: number | null;
+  tax: number | null;
+  discount: number | null;
+  email: string;
+  shipping_address: unknown | null;
+  billing_address: unknown | null;
   tracking_number: string | null;
   notes: string | null;
+  payment_method: string | null;
+  payment_status: string | null;
+  stripe_session_id: string | null;
   created_at: string;
   updated_at: string;
   shipped_at: string | null;
@@ -40,8 +38,10 @@ export interface OrderItem {
   product_name: string;
   quantity: number;
   price: number;
+  total: number;
   size: string | null;
   color: string | null;
+  product_image: string | null;
   created_at: string;
 }
 
@@ -52,13 +52,13 @@ export interface OrderWithItems extends Order {
 export interface ReturnRequest {
   id: string;
   order_id: string;
-  user_id: string;
-  status: ReturnStatus;
+  user_id: string | null;
+  status: string | null;
   reason: string;
   refund_amount: number | null;
-  admin_notes: string | null;
-  created_at: string | null;
-  updated_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export type ReturnStatus = 

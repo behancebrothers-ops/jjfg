@@ -94,7 +94,7 @@ const Blog = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <User className="h-4 w-4" />
-                    {post.author}
+                    {post.author_name || 'Anonymous'}
                   </div>
                   <Button variant="ghost" size="sm" asChild>
                     <Link to={`/blog/${post.slug}`}>

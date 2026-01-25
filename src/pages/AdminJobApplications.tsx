@@ -27,17 +27,17 @@ import {
 
 type JobApplication = {
   id: string;
-  job_posting_id: string;
-  full_name: string;
+  job_id: string;
+  name: string;
   email: string;
   phone: string | null;
   cover_letter: string | null;
-  resume_path: string;
-  status: string;
+  resume_url: string | null;
+  status: string | null;
   created_at: string;
   job_posting: {
     title: string;
-    department: string;
+    department: string | null;
   } | null;
 };
 
@@ -106,7 +106,7 @@ const AdminJobApplications = () => {
 
   const filteredApplications = applications.filter((app) => {
     const matchesSearch =
-      app.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.job_posting?.title.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -200,11 +200,11 @@ const AdminJobApplications = () => {
                       <div className="flex items-start gap-3 mb-3">
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold mb-1">
-                            {application.full_name}
+                            {application.name}
                           </h3>
                           <p className="text-sm text-muted-foreground mb-2">
                             {application.job_posting?.title} •{" "}
-                            {application.job_posting?.department}
+                            {application.job_posting?.department || 'N/A'}
                           </p>
                           <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                             <div className="flex items-center gap-1">
@@ -219,8 +219,8 @@ const AdminJobApplications = () => {
                             )}
                           </div>
                         </div>
-                        <Badge className={getStatusColor(application.status)}>
-                          {application.status}
+                        <Badge className={getStatusColor(application.status || 'pending')}>
+                          {application.status || 'pending'}
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
@@ -240,21 +240,23 @@ const AdminJobApplications = () => {
                         <Eye className="h-4 w-4 mr-2" />
                         View
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          downloadResume(
-                            application.resume_path,
-                            application.full_name
-                          )
-                        }
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Resume
-                      </Button>
+                      {application.resume_url && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            downloadResume(
+                              application.resume_url!,
+                              application.name
+                            )
+                          }
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Resume
+                        </Button>
+                      )}
                       <Select
-                        value={application.status}
+                        value={application.status || 'pending'}
                         onValueChange={(value) =>
                           updateStatusMutation.mutate({
                             id: application.id,
@@ -292,14 +294,14 @@ const AdminJobApplications = () => {
                   <h3 className="font-semibold mb-2">Position</h3>
                   <p className="text-sm">
                     {selectedApplication.job_posting?.title} •{" "}
-                    {selectedApplication.job_posting?.department}
+                    {selectedApplication.job_posting?.department || 'N/A'}
                   </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Applicant Information</h3>
                   <div className="space-y-1 text-sm">
                     <p>
-                      <strong>Name:</strong> {selectedApplication.full_name}
+                      <strong>Name:</strong> {selectedApplication.name}
                     </p>
                     <p>
                       <strong>Email:</strong> {selectedApplication.email}
@@ -323,18 +325,20 @@ const AdminJobApplications = () => {
                     </div>
                   </div>
                 )}
-                <Button
-                  className="w-full"
-                  onClick={() =>
-                    downloadResume(
-                      selectedApplication.resume_path,
-                      selectedApplication.full_name
-                    )
-                  }
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Resume
-                </Button>
+                {selectedApplication.resume_url && (
+                  <Button
+                    className="w-full"
+                    onClick={() =>
+                      downloadResume(
+                        selectedApplication.resume_url!,
+                        selectedApplication.name
+                      )
+                    }
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Resume
+                  </Button>
+                )}
               </div>
             )}
           </DialogContent>

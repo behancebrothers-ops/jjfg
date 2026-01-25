@@ -189,7 +189,7 @@ const AdminOrders = () => {
                         </div>
                       </td>
                       <td className="py-4 px-4 text-slate-600 dark:text-slate-400">{order.itemsCount}</td>
-                      <td className="py-4 px-4 font-semibold text-emerald-600 dark:text-emerald-400">PKR {Number(order.total_amount).toLocaleString()}</td>
+                      <td className="py-4 px-4 font-semibold text-emerald-600 dark:text-emerald-400">PKR {Number(order.total || 0).toLocaleString()}</td>
                       <td className="py-4 px-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
                           order.status === "completed" ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400" :

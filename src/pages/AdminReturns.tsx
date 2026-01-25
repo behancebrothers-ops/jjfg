@@ -11,46 +11,55 @@ import { Eye, Check, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+interface ReturnRequest {
+  id: string;
+  order_id: string;
+  user_id: string | null;
+  reason: string;
+  status: string | null;
+  notes: string | null;
+  refund_amount: number | null;
+  created_at: string;
+  updated_at: string;
+  order?: {
+    order_number: string;
+    total: number;
+    profile?: {
+      email: string | null;
+      full_name: string | null;
+    } | null;
+  } | null;
+}
 
 const AdminReturns = () => {
-  const [selectedReturn, setSelectedReturn] = useState<any>(null);
+  const [selectedReturn, setSelectedReturn] = useState<ReturnRequest | null>(null);
   const [returnDialogOpen, setReturnDialogOpen] = useState(false);
   const [adminNotes, setAdminNotes] = useState("");
   const [refundAmount, setRefundAmount] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const queryClient = useQueryClient();
 
-  // Fetch all return requests
+  // Fetch all return requests from the returns table
   const { data: returns, isLoading } = useQuery({
     queryKey: ["admin-returns"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("return_requests")
-        .select(`
-          *,
-          return_items (
-            id,
-            quantity,
-            order_items (
-              product_name,
-              price
-            )
-          )
-        `)
+        .from("returns")
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
 
       // Enrich with order and profile data
       const enrichedData = await Promise.all(
-        data.map(async (returnRequest) => {
+        (data || []).map(async (returnRequest) => {
           const { data: order } = await supabase
             .from("orders")
-            .select("order_number, total_amount, user_id")
+            .select("order_number, total, user_id")
             .eq("id", returnRequest.order_id)
-            .single();
+            .maybeSingle();
 
           let profile = null;
           if (order?.user_id) {
@@ -58,11 +67,14 @@ const AdminReturns = () => {
               .from("profiles")
               .select("email, full_name")
               .eq("id", order.user_id)
-              .single();
+              .maybeSingle();
             profile = profileData;
           }
 
-          return { ...returnRequest, order: { ...order, profile } };
+          return { 
+            ...returnRequest, 
+            order: order ? { ...order, profile } : null 
+          } as ReturnRequest;
         })
       );
 
@@ -83,9 +95,9 @@ const AdminReturns = () => {
       notes: string;
       refund: string;
     }) => {
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         status,
-        admin_notes: notes,
+        notes,
         updated_at: new Date().toISOString(),
       };
 
@@ -94,7 +106,7 @@ const AdminReturns = () => {
       }
 
       const { error } = await supabase
-        .from("return_requests")
+        .from("returns")
         .update(updateData)
         .eq("id", returnId);
 
@@ -113,9 +125,9 @@ const AdminReturns = () => {
     },
   });
 
-  const handleViewReturn = (returnRequest: any) => {
+  const handleViewReturn = (returnRequest: ReturnRequest) => {
     setSelectedReturn(returnRequest);
-    setAdminNotes(returnRequest.admin_notes || "");
+    setAdminNotes(returnRequest.notes || "");
     setRefundAmount(returnRequest.refund_amount?.toString() || "");
     setReturnDialogOpen(true);
   };
@@ -140,7 +152,7 @@ const AdminReturns = () => {
     });
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | null) => {
     switch (status) {
       case "pending":
         return "bg-yellow-500";
@@ -210,14 +222,14 @@ const AdminReturns = () => {
                       <div>
                         <div className="flex items-center gap-3 mb-2">
                           <h3 className="font-semibold">
-                            Order #{returnRequest.order?.order_number}
+                            Order #{returnRequest.order?.order_number || 'N/A'}
                           </h3>
                           <Badge className={getStatusColor(returnRequest.status)}>
-                            {returnRequest.status}
+                            {returnRequest.status || 'pending'}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Customer: {returnRequest.order?.profile?.full_name || "N/A"} ({returnRequest.order?.profile?.email})
+                          Customer: {returnRequest.order?.profile?.full_name || "N/A"} ({returnRequest.order?.profile?.email || 'N/A'})
                         </p>
                       </div>
                       <Button
@@ -234,17 +246,6 @@ const AdminReturns = () => {
                       <div>
                         <p className="text-sm font-medium">Reason:</p>
                         <p className="text-sm text-muted-foreground">{returnRequest.reason}</p>
-                      </div>
-
-                      <div>
-                        <p className="text-sm font-medium">Items:</p>
-                        <div className="text-sm text-muted-foreground">
-                          {returnRequest.return_items?.map((item: any) => (
-                            <div key={item.id}>
-                              {item.order_items?.product_name} (Qty: {item.quantity})
-                            </div>
-                          ))}
-                        </div>
                       </div>
 
                       <div className="flex justify-between items-center pt-2 border-t">
@@ -285,19 +286,19 @@ const AdminReturns = () => {
                   <CardContent className="space-y-3">
                     <div>
                       <p className="text-sm text-muted-foreground">Order Number</p>
-                      <p className="font-medium">#{selectedReturn.order?.order_number}</p>
+                      <p className="font-medium">#{selectedReturn.order?.order_number || 'N/A'}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Customer</p>
                       <p className="font-medium">
                         {selectedReturn.order?.profile?.full_name || "N/A"}
                       </p>
-                      <p className="text-sm">{selectedReturn.order?.profile?.email}</p>
+                      <p className="text-sm">{selectedReturn.order?.profile?.email || 'N/A'}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Order Total</p>
                       <p className="font-medium">
-                        ${selectedReturn.order?.total_amount.toFixed(2)}
+                        ${(selectedReturn.order?.total || 0).toFixed(2)}
                       </p>
                     </div>
                   </CardContent>
@@ -311,23 +312,12 @@ const AdminReturns = () => {
                     <div>
                       <p className="text-sm text-muted-foreground">Status</p>
                       <Badge className={getStatusColor(selectedReturn.status)}>
-                        {selectedReturn.status}
+                        {selectedReturn.status || 'pending'}
                       </Badge>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Reason</p>
                       <p className="font-medium">{selectedReturn.reason}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Items to Return</p>
-                      <div className="space-y-2 mt-2">
-                        {selectedReturn.return_items?.map((item: any) => (
-                          <div key={item.id} className="flex justify-between p-2 bg-muted rounded">
-                            <span>{item.order_items?.product_name}</span>
-                            <span>Qty: {item.quantity}</span>
-                          </div>
-                        ))}
-                      </div>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Requested Date</p>
