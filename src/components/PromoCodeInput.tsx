@@ -64,8 +64,8 @@ export const PromoCodeInput = ({
 
     try {
       const { data, error } = await supabase.rpc("apply_discount_code", {
-        p_code: promoCode.toUpperCase(),
-        p_order_amount: subtotal,
+        _code: promoCode.toUpperCase(),
+        _cart_total: subtotal,
       });
 
       if (error) throw error;

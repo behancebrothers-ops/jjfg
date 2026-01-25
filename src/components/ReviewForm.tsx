@@ -11,11 +11,10 @@ import { logger } from "@/lib/logger";
 
 const reviewSchema = z.object({
   rating: z.number().int().min(1, "Rating must be between 1 and 5").max(5, "Rating must be between 1 and 5"),
-  review_text: z.string()
+  comment: z.string()
     .trim()
     .min(10, "Review must be at least 10 characters")
-    .max(2000, "Review must be less than 2000 characters")
-    .regex(/^[\w\s.,!?'"\-()]+$/, "Review contains invalid characters"),
+    .max(2000, "Review must be less than 2000 characters"),
 });
 
 interface ReviewFormProps {
@@ -42,8 +41,8 @@ export const ReviewForm = ({ productId, onReviewSubmitted }: ReviewFormProps) =>
         }
 
         const { data, error } = await supabase.rpc('has_purchased_product', {
-          p_user_id: user.id,
-          p_product_id: productId
+          _user_id: user.id,
+          _product_id: productId
         });
 
         if (error) throw error;
@@ -65,7 +64,7 @@ export const ReviewForm = ({ productId, onReviewSubmitted }: ReviewFormProps) =>
     // Validate input using Zod schema
     const validation = reviewSchema.safeParse({
       rating,
-      review_text: reviewText,
+      comment: reviewText,
     });
 
     if (!validation.success) {
@@ -98,7 +97,7 @@ export const ReviewForm = ({ productId, onReviewSubmitted }: ReviewFormProps) =>
           product_id: productId,
           user_id: user.id,
           rating: validation.data.rating,
-          review_text: validation.data.review_text,
+          comment: validation.data.comment,
         });
 
       if (error) {

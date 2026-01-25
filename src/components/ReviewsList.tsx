@@ -7,7 +7,8 @@ import { User, Loader2 } from "lucide-react";
 interface Review {
   id: string;
   rating: number;
-  review_text: string | null;
+  comment: string | null;
+  title: string | null;
   created_at: string;
   user_id: string;
   profiles?: {
@@ -35,6 +36,7 @@ export const ReviewsList = ({ productId, refreshTrigger = 0 }: ReviewsListProps)
         .from("reviews")
         .select("*")
         .eq("product_id", productId)
+        .eq("is_approved", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -53,7 +55,7 @@ export const ReviewsList = ({ productId, refreshTrigger = 0 }: ReviewsListProps)
           profiles: profiles?.find(p => p.id === review.user_id) || null
         }));
 
-        setReviews(reviewsWithProfiles as Review[]);
+        setReviews(reviewsWithProfiles);
         
         const avg = data.reduce((acc, review) => acc + review.rating, 0) / data.length;
         setAverageRating(Math.round(avg * 10) / 10);
@@ -118,9 +120,12 @@ export const ReviewsList = ({ productId, refreshTrigger = 0 }: ReviewsListProps)
                       </span>
                     </div>
                   </div>
-                  {review.review_text && (
+                  {review.title && (
+                    <p className="font-medium">{review.title}</p>
+                  )}
+                  {review.comment && (
                     <p className="text-muted-foreground leading-relaxed">
-                      {review.review_text}
+                      {review.comment}
                     </p>
                   )}
                 </div>

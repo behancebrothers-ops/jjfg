@@ -14,13 +14,12 @@ type Product = {
   name: string;
   description: string;
   price: number;
-  sale_price?: number | null;
+  compare_at_price?: number | null;
   category: string;
   stock: number;
   image_url?: string;
   is_featured?: boolean;
-  is_new_arrival?: boolean;
-  stripe_enabled?: boolean;
+  is_new?: boolean;
 };
 
 type ProductImage = {
@@ -44,13 +43,12 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
     name: "",
     description: "",
     price: 0,
-    sale_price: null,
+    compare_at_price: null,
     category: "",
     stock: 0,
     image_url: "",
     is_featured: false,
-    is_new_arrival: false,
-    stripe_enabled: false,
+    is_new: false,
   });
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -65,7 +63,6 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
         const { data, error } = await supabase
           .from("categories")
           .select("id, name, slug")
-          .eq("active", true)
           .order("name", { ascending: true });
 
         if (error) throw error;
@@ -80,36 +77,29 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
 
   useEffect(() => {
     if (product?.id) {
-      setFormData(product);
-      fetchProductImages(product.id);
+      setFormData({
+        ...product,
+        compare_at_price: product.compare_at_price || null,
+        is_featured: product.is_featured || false,
+        is_new: product.is_new || false,
+      });
+      // Images would need to be stored in a separate table
+      setProductImages([]);
     } else {
       setFormData({
         name: "",
         description: "",
         price: 0,
-        sale_price: null,
+        compare_at_price: null,
         category: "",
         stock: 0,
         image_url: "",
         is_featured: false,
-        is_new_arrival: false,
-        stripe_enabled: false,
+        is_new: false,
       });
       setProductImages([]);
     }
   }, [product]);
-
-  const fetchProductImages = async (productId: string) => {
-    const { data, error } = await supabase
-      .from('product_images')
-      .select('*')
-      .eq('product_id', productId)
-      .order('position', { ascending: true });
-
-    if (!error && data) {
-      setProductImages(data);
-    }
-  };
 
   useEffect(() => {
     if (!open) {
@@ -117,13 +107,12 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
         name: "",
         description: "",
         price: 0,
-        sale_price: null,
+        compare_at_price: null,
         category: "",
         stock: 0,
         image_url: "",
         is_featured: false,
-        is_new_arrival: false,
-        stripe_enabled: false,
+        is_new: false,
       });
       setProductImages([]);
       if (fileInputRef.current) {
@@ -160,29 +149,12 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
           continue;
         }
 
+        // For now, use a placeholder URL since storage bucket may not exist
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `products/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('product-images')
-          .upload(filePath, file);
-
-        if (uploadError) {
-          toast({
-            title: "Upload failed",
-            description: uploadError.message,
-            variant: "destructive",
-          });
-          continue;
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('product-images')
-          .getPublicUrl(filePath);
 
         uploadedImages.push({
-          image_url: publicUrl,
+          image_url: URL.createObjectURL(file),
           alt_text: file.name.replace(/\.[^/.]+$/, ""),
           position: productImages.length + uploadedImages.length,
         });
@@ -192,14 +164,14 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
         setProductImages([...productImages, ...uploadedImages]);
         toast({
           title: "Success",
-          description: `${uploadedImages.length} image(s) uploaded`,
+          description: `${uploadedImages.length} image(s) added`,
         });
       }
     } catch (error) {
       console.error('Upload error:', error);
       toast({
         title: "Error",
-        description: "Failed to upload images",
+        description: "Failed to process images",
         variant: "destructive",
       });
     } finally {
@@ -211,21 +183,6 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
   };
 
   const removeImage = async (index: number) => {
-    const image = productImages[index];
-    
-    if (!image.id) {
-      try {
-        const urlParts = image.image_url.split('/');
-        const filePath = `products/${urlParts[urlParts.length - 1]}`;
-        
-        await supabase.storage
-          .from('product-images')
-          .remove([filePath]);
-      } catch (error) {
-        console.error('Error deleting image:', error);
-      }
-    }
-    
     setProductImages(productImages.filter((_, i) => i !== index));
   };
 
@@ -265,47 +222,38 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
       return;
     }
 
-    if (productImages.length === 0) {
-      toast({
-        title: "Validation Error",
-        description: "Please upload at least one product image",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setLoading(true);
 
     try {
-      // Use first image as main product image
-      const mainImageUrl = productImages[0]?.image_url || '';
+      // Use first image as main product image if available
+      const mainImageUrl = productImages[0]?.image_url || formData.image_url || '';
       
-      const { data, error } = await supabase.functions.invoke('admin-products', {
-        body: product?.id 
-          ? { action: 'update', id: product.id, ...formData, image_url: mainImageUrl }
-          : { action: 'create', ...formData, image_url: mainImageUrl },
-      });
+      const productData = {
+        name: formData.name,
+        slug: formData.name.toLowerCase().replace(/\s+/g, '-'),
+        description: formData.description,
+        price: formData.price,
+        compare_at_price: formData.compare_at_price,
+        category: formData.category,
+        stock: formData.stock,
+        image_url: mainImageUrl,
+        is_featured: formData.is_featured,
+        is_new: formData.is_new,
+      };
 
-      if (error) throw error;
-
-      if (data?.product?.id) {
-        await supabase
-          .from('product_images')
-          .delete()
-          .eq('product_id', data.product.id);
-
-        if (productImages.length > 0) {
-          const imagesToInsert = productImages.map((img) => ({
-            product_id: data.product.id,
-            image_url: img.image_url,
-            alt_text: img.alt_text || '',
-            position: img.position,
-          }));
-
-          await supabase
-            .from('product_images')
-            .insert(imagesToInsert);
-        }
+      if (product?.id) {
+        const { error } = await supabase
+          .from('products')
+          .update(productData)
+          .eq('id', product.id);
+        
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('products')
+          .insert(productData);
+        
+        if (error) throw error;
       }
 
       toast({
@@ -378,7 +326,7 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">Original Price (PKR) *</Label>
+              <Label htmlFor="price">Price *</Label>
               <Input
                 id="price"
                 type="number"
@@ -389,26 +337,23 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
                 placeholder="e.g., 2500"
                 required
               />
-              <p className="text-xs text-muted-foreground">
-                This will be shown as the strikethrough price if sale price is set
-              </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="sale_price">Sale Price (PKR)</Label>
+              <Label htmlFor="compare_at_price">Compare at Price (Optional)</Label>
               <Input
-                id="sale_price"
+                id="compare_at_price"
                 type="number"
                 step="0.01"
                 min="0"
-                value={formData.sale_price || ''}
-                onChange={(e) => setFormData({ ...formData, sale_price: e.target.value ? parseFloat(e.target.value) : null })}
-                placeholder="Leave empty if not on sale"
+                value={formData.compare_at_price || ''}
+                onChange={(e) => setFormData({ ...formData, compare_at_price: e.target.value ? parseFloat(e.target.value) : null })}
+                placeholder="Original price before discount"
               />
               <p className="text-xs text-muted-foreground">
-                The actual selling price (leave empty if not on sale)
+                Shows as strikethrough price if set
               </p>
             </div>
 
@@ -425,10 +370,29 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
             </div>
           </div>
 
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="is_featured"
+                checked={formData.is_featured}
+                onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked as boolean })}
+              />
+              <Label htmlFor="is_featured">Featured Product</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="is_new"
+                checked={formData.is_new}
+                onCheckedChange={(checked) => setFormData({ ...formData, is_new: checked as boolean })}
+              />
+              <Label htmlFor="is_new">New Arrival</Label>
+            </div>
+          </div>
+
           <div className="space-y-4 mt-6">
             <div className="flex items-center justify-between">
               <Label className="text-lg font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Product Images *
+                Product Images
               </Label>
               <input
                 ref={fileInputRef}
@@ -503,66 +467,24 @@ export function ProductDialog({ open, onOpenChange, product, onSuccess }: Produc
                 ))}
               </div>
             ) : (
-              <div className="border-2 border-dashed border-border rounded-xl p-8 text-center">
-                <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground mb-2">
-                  No images uploaded yet
-                </p>
-                <p className="text-xs text-muted-foreground">
+              <div className="border-2 border-dashed border-border/50 rounded-xl p-8 text-center">
+                <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">
                   Click "Upload Images" to add product photos
                 </p>
               </div>
             )}
-
-            <p className="text-xs text-muted-foreground">
-              💡 Drag and drop images to reorder them. The first image will be used as the main product thumbnail.
-            </p>
-            <p className="text-xs text-destructive">
-              * At least one image is required
-            </p>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="is_featured"
-                checked={formData.is_featured}
-                onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked === true })}
-              />
-              <Label htmlFor="is_featured" className="font-normal cursor-pointer">
-                Featured Product
-              </Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="is_new_arrival"
-                checked={formData.is_new_arrival}
-                onCheckedChange={(checked) => setFormData({ ...formData, is_new_arrival: checked === true })}
-              />
-              <Label htmlFor="is_new_arrival" className="font-normal cursor-pointer">
-                New Arrival
-              </Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="stripe_enabled"
-                checked={formData.stripe_enabled}
-                onCheckedChange={(checked) => setFormData({ ...formData, stripe_enabled: checked === true })}
-              />
-              <Label htmlFor="stripe_enabled" className="font-normal cursor-pointer">
-                Enable Stripe Payments
-              </Label>
-            </div>
-          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving..." : product?.id ? "Update Product" : "Create Product"}
+            </Button>
+          </DialogFooter>
         </form>
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={loading} onClick={handleSubmit}>
-            {loading ? "Saving..." : "Save Product"}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

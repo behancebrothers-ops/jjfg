@@ -9,9 +9,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 interface SearchSuggestion {
   id: string;
   name: string;
-  category: string;
+  category: string | null;
   price: number;
-  sale_price: number | null;
+  compare_at_price: number | null;
   image_url: string | null;
 }
 
@@ -72,7 +72,7 @@ export const SearchBar = ({ isOpen, onClose, isMobile = false }: SearchBarProps)
       try {
         const { data, error } = await supabase
           .from("products")
-          .select("id, name, category, price, sale_price, image_url")
+          .select("id, name, category, price, compare_at_price, image_url")
           .or(`name.ilike.%${debouncedQuery}%,category.ilike.%${debouncedQuery}%,description.ilike.%${debouncedQuery}%`)
           .limit(6);
 
@@ -247,10 +247,10 @@ export const SearchBar = ({ isOpen, onClose, isMobile = false }: SearchBarProps)
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground">{product.category}</span>
                             <span className="text-xs">•</span>
-                            {product.sale_price ? (
+                            {product.compare_at_price ? (
                               <>
-                                <span className="text-xs font-semibold text-green-600">${product.sale_price.toFixed(2)}</span>
-                                <span className="text-xs text-muted-foreground line-through">${product.price.toFixed(2)}</span>
+                                <span className="text-xs font-semibold text-green-600">${product.price.toFixed(2)}</span>
+                                <span className="text-xs text-muted-foreground line-through">${product.compare_at_price.toFixed(2)}</span>
                               </>
                             ) : (
                               <span className="text-xs font-semibold">${product.price.toFixed(2)}</span>

@@ -19,6 +19,15 @@ interface OrderDetailsDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+interface ShippingAddress {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  country?: string;
+}
+
 export const OrderDetailsDialog = ({ orderId, open, onOpenChange }: OrderDetailsDialogProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -40,13 +49,11 @@ export const OrderDetailsDialog = ({ orderId, open, onOpenChange }: OrderDetails
 
       if (orderError) throw orderError;
 
-      const { data: profile, error: profileError } = await supabase
+      const { data: profile } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", order.user_id)
-        .single();
-
-      if (profileError) throw profileError;
+        .maybeSingle();
 
       const { data: items, error: itemsError } = await supabase
         .from("order_items")
@@ -107,15 +114,12 @@ export const OrderDetailsDialog = ({ orderId, open, onOpenChange }: OrderDetails
         // Check user notification preferences
         const { data: prefs } = await supabase
           .from('notification_preferences')
-          .select('order_shipped, order_delivered')
+          .select('email_orders')
           .eq('user_id', orderDetails.order.user_id)
           .maybeSingle();
 
         // Check if user wants this type of notification
-        const shouldSendEmail = prefs && (
-          (emailType === "shipped" && prefs.order_shipped) ||
-          (emailType === "delivered" && prefs.order_delivered)
-        );
+        const shouldSendEmail = prefs?.email_orders !== false;
 
         if (!shouldSendEmail) {
           toast({
@@ -194,6 +198,16 @@ export const OrderDetailsDialog = ({ orderId, open, onOpenChange }: OrderDetails
     }
   };
 
+  // Parse shipping address from JSONB
+  const getShippingAddress = (): ShippingAddress => {
+    if (!orderDetails?.order?.shipping_address) return {};
+    const addr = orderDetails.order.shipping_address;
+    if (typeof addr === 'object' && addr !== null) {
+      return addr as ShippingAddress;
+    }
+    return {};
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -238,7 +252,7 @@ export const OrderDetailsDialog = ({ orderId, open, onOpenChange }: OrderDetails
                 <h3 className="font-semibold">Order Items</h3>
               </div>
               <div className="space-y-3">
-                {orderDetails.items.map((item) => (
+                {orderDetails.items?.map((item) => (
                   <div key={item.id} className="flex justify-between items-start p-3 bg-muted/30 rounded-lg">
                     <div className="flex-1">
                       <p className="font-medium">{item.product_name}</p>
@@ -266,15 +280,22 @@ export const OrderDetailsDialog = ({ orderId, open, onOpenChange }: OrderDetails
                 <h3 className="font-semibold">Shipping Address</h3>
               </div>
               <div className="p-4 bg-muted/30 rounded-lg space-y-1">
-                <p className="font-medium">{orderDetails.profile.full_name}</p>
-                <p className="text-sm">{orderDetails.order.shipping_address_line1}</p>
-                {orderDetails.order.shipping_address_line2 && (
-                  <p className="text-sm">{orderDetails.order.shipping_address_line2}</p>
-                )}
-                <p className="text-sm">
-                  {orderDetails.order.shipping_city}, {orderDetails.order.shipping_state} {orderDetails.order.shipping_postal_code}
-                </p>
-                <p className="text-sm">{orderDetails.order.shipping_country}</p>
+                <p className="font-medium">{orderDetails.profile?.full_name || orderDetails.order.email}</p>
+                {(() => {
+                  const addr = getShippingAddress();
+                  return (
+                    <>
+                      {addr.line1 && <p className="text-sm">{addr.line1}</p>}
+                      {addr.line2 && <p className="text-sm">{addr.line2}</p>}
+                      {(addr.city || addr.state || addr.postal_code) && (
+                        <p className="text-sm">
+                          {addr.city}{addr.city && addr.state && ', '}{addr.state} {addr.postal_code}
+                        </p>
+                      )}
+                      {addr.country && <p className="text-sm">{addr.country}</p>}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -293,22 +314,22 @@ export const OrderDetailsDialog = ({ orderId, open, onOpenChange }: OrderDetails
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span>${Number(orderDetails.order.shipping_cost || 0).toFixed(2)}</span>
+                  <span>${Number(orderDetails.order.shipping || 0).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Tax</span>
-                  <span>${Number(orderDetails.order.tax_amount || 0).toFixed(2)}</span>
+                  <span>${Number(orderDetails.order.tax || 0).toFixed(2)}</span>
                 </div>
-                {orderDetails.order.discount_amount > 0 && (
+                {Number(orderDetails.order.discount) > 0 && (
                   <div className="flex justify-between text-sm text-green-600">
                     <span>Discount</span>
-                    <span>-${Number(orderDetails.order.discount_amount).toFixed(2)}</span>
+                    <span>-${Number(orderDetails.order.discount).toFixed(2)}</span>
                   </div>
                 )}
                 <Separator />
                 <div className="flex justify-between font-semibold text-lg">
                   <span>Total</span>
-                  <span>${Number(orderDetails.order.total_amount).toFixed(2)}</span>
+                  <span>${Number(orderDetails.order.total).toFixed(2)}</span>
                 </div>
               </div>
             </div>
