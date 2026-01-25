@@ -28,7 +28,7 @@ const NewArrivals = () => {
         const { data, error } = await supabase
           .from("products")
           .select("*")
-          .eq("is_new_arrival", true)
+          .eq("is_new", true)
           .order("created_at", { ascending: false });
 
         if (error) throw error;

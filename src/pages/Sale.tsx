@@ -32,13 +32,14 @@ interface SaleProduct {
   id: string;
   name: string;
   price: number;
-  sale_price: number | null;
-  sale_ends_at: string | null;
+  compare_at_price: number | null;
+  sale_percentage: number | null;
   image_url: string | null;
   category: string;
   stock: number;
   is_featured?: boolean;
-  is_new_arrival?: boolean;
+  is_new?: boolean;
+  is_on_sale?: boolean;
 }
 
 interface ActiveDiscount {
@@ -103,10 +104,11 @@ export default function Sale() {
     try {
       setLoading(true);
 
+      // Fetch products that are on sale (have compare_at_price or is_on_sale flag)
       const { data: onSale } = await supabase
         .from("products")
         .select("*")
-        .not("sale_price", "is", null)
+        .eq("is_on_sale", true)
         .gt("stock", 0)
         .order("created_at", { ascending: false })
         .limit(12);
@@ -126,26 +128,9 @@ export default function Sale() {
         .or(`valid_until.is.null,valid_until.gt.${new Date().toISOString()}`)
         .limit(6);
 
-      setSaleProducts(onSale || []);
-      setFeaturedProducts(featured || []);
+      setSaleProducts((onSale || []) as SaleProduct[]);
+      setFeaturedProducts((featured || []) as SaleProduct[]);
       setActiveDiscounts(discounts || []);
-
-      if (onSale && onSale.length > 0) {
-        const firstSaleEnd = onSale.find(p => p.sale_ends_at)?.sale_ends_at;
-        if (firstSaleEnd) {
-          const endDate = new Date(firstSaleEnd);
-          const now = new Date();
-          const diff = endDate.getTime() - now.getTime();
-          if (diff > 0) {
-            setTimeLeft({
-              days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-              hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-              minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-              seconds: Math.floor((diff % (1000 * 60)) / 1000)
-            });
-          }
-        }
-      }
     } catch (error) {
       console.error("Error fetching sale data:", error);
     } finally {
@@ -157,7 +142,32 @@ export default function Sale() {
     addToCart(productId, null, 1);
   };
 
-  const calculateDiscount = (price: number, salePrice: number) => {
+  const calculateDiscount = (price: number, compareAtPrice: number | null, salePercentage: number | null) => {
+    if (salePercentage) return salePercentage;
+    if (compareAtPrice && compareAtPrice > price) {
+      return Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
+    }
+    return 0;
+  };
+
+  const getSalePrice = (product: SaleProduct) => {
+    if (product.compare_at_price && product.compare_at_price > product.price) {
+      return product.price;
+    }
+    if (product.sale_percentage) {
+      return product.price * (1 - product.sale_percentage / 100);
+    }
+    return product.price;
+  };
+
+  const getOriginalPrice = (product: SaleProduct) => {
+    if (product.compare_at_price && product.compare_at_price > product.price) {
+      return product.compare_at_price;
+    }
+    return product.price;
+  };
+
+  const _calculateDiscountOld = (price: number, salePrice: number) => {
     return Math.round(((price - salePrice) / price) * 100);
   };
 
@@ -407,19 +417,19 @@ export default function Sale() {
                     transition={{ delay: index * 0.1 }}
                     className="relative"
                   >
-                    {product.sale_price && (
+                    {(product.compare_at_price || product.is_on_sale) && (
                       <div className="absolute top-2 left-2 z-10">
                         <Badge className="bg-red-500 text-white border-0 shadow-lg">
                           <TrendingDown className="h-3 w-3 mr-1" />
-                          {calculateDiscount(product.price, product.sale_price)}% OFF
+                          {calculateDiscount(product.price, product.compare_at_price, product.sale_percentage)}% OFF
                         </Badge>
                       </div>
                     )}
                     <DbProductCard
                       id={product.id}
                       name={product.name}
-                      price={product.sale_price || product.price}
-                      originalPrice={product.sale_price ? product.price : undefined}
+                      price={getSalePrice(product)}
+                      originalPrice={product.compare_at_price && product.compare_at_price > product.price ? product.compare_at_price : undefined}
                       imageUrl={product.image_url}
                       category={product.category}
                       stock={product.stock}
@@ -527,11 +537,11 @@ export default function Sale() {
 
                       <div className="p-4">
                         <div className="relative aspect-[3/4] rounded-xl overflow-hidden mb-5">
-                          {product.sale_price ? (
+                          {(product.compare_at_price || product.is_on_sale) ? (
                             <div className="absolute top-3 left-3 z-10">
                               <Badge className="bg-red-500 text-white border-0 shadow-lg px-2.5 py-1">
                                 <TrendingDown className="h-3 w-3 mr-1" />
-                                {calculateDiscount(product.price, product.sale_price)}% OFF
+                                {calculateDiscount(product.price, product.compare_at_price, product.sale_percentage)}% OFF
                               </Badge>
                             </div>
                           ) : (
@@ -570,11 +580,11 @@ export default function Sale() {
 
                           <div className="flex items-center gap-3">
                             <span className="text-xl font-black text-amber-500">
-                              ${product.sale_price || product.price}
+                              ${getSalePrice(product).toFixed(2)}
                             </span>
-                            {product.sale_price && (
+                            {product.compare_at_price && product.compare_at_price > product.price && (
                               <span className="text-sm text-slate-500 line-through">
-                                ${product.price}
+                                ${product.compare_at_price.toFixed(2)}
                               </span>
                             )}
                           </div>

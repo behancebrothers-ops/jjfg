@@ -11,16 +11,12 @@ interface OrderDetails {
   id: string;
   order_number: string;
   status: string;
-  total_amount: number;
+  total: number;
   subtotal: number;
-  shipping_cost: number;
-  tax_amount: number;
-  discount_amount: number;
-  shipping_address_line1: string;
-  shipping_city: string;
-  shipping_state: string;
-  shipping_postal_code: string;
-  shipping_country: string;
+  shipping: number | null;
+  tax: number | null;
+  discount: number | null;
+  shipping_address: unknown;
   created_at: string;
   order_items: Array<{
     product_name: string;
@@ -69,7 +65,9 @@ const OrderSuccess = () => {
             .maybeSingle();
 
           if (error) throw error;
-          setOrderDetails(data);
+          if (data) {
+            setOrderDetails(data as OrderDetails);
+          }
         } catch (error) {
           console.error("Error fetching order:", error);
         }
@@ -87,6 +85,9 @@ const OrderSuccess = () => {
       </div>
     );
   }
+
+  // Parse shipping address if it exists
+  const shippingAddress = orderDetails?.shipping_address as Record<string, string> | null;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -153,41 +154,43 @@ const OrderSuccess = () => {
                       <span className="text-muted-foreground">Subtotal</span>
                       <span>${orderDetails.subtotal.toFixed(2)}</span>
                     </div>
-                    {orderDetails.discount_amount > 0 && (
+                    {orderDetails.discount && orderDetails.discount > 0 && (
                       <div className="flex justify-between text-sm text-green-600">
                         <span>Discount</span>
-                        <span>-${orderDetails.discount_amount.toFixed(2)}</span>
+                        <span>-${orderDetails.discount.toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Shipping</span>
-                      <span>${orderDetails.shipping_cost.toFixed(2)}</span>
+                      <span>${(orderDetails.shipping || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Tax</span>
-                      <span>${orderDetails.tax_amount.toFixed(2)}</span>
+                      <span>${(orderDetails.tax || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-lg font-bold pt-2 border-t">
                       <span>Total</span>
-                      <span>${orderDetails.total_amount.toFixed(2)}</span>
+                      <span>${orderDetails.total.toFixed(2)}</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle>Shipping Address</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{orderDetails.shipping_address_line1}</p>
-                  <p>
-                    {orderDetails.shipping_city}, {orderDetails.shipping_state}{" "}
-                    {orderDetails.shipping_postal_code}
-                  </p>
-                  <p>{orderDetails.shipping_country}</p>
-                </CardContent>
-              </Card>
+              {shippingAddress && (
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle>Shipping Address</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>{shippingAddress.address || shippingAddress.line1}</p>
+                    <p>
+                      {shippingAddress.city}, {shippingAddress.state}{" "}
+                      {shippingAddress.postal_code || shippingAddress.postalCode}
+                    </p>
+                    <p>{shippingAddress.country}</p>
+                  </CardContent>
+                </Card>
+              )}
             </>
           ) : (
             <Card className="mb-6">

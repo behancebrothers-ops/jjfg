@@ -29,7 +29,7 @@ interface Order {
   id: string;
   order_number: string;
   status: string;
-  total_amount: number;
+  total: number;
   created_at: string;
   order_items: Array<{
     id: string;
@@ -95,7 +95,7 @@ export default function Profile() {
         id,
         order_number,
         status,
-        total_amount,
+        total,
         created_at,
         order_items (
           id,
@@ -504,9 +504,9 @@ export default function Profile() {
 
                             <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                               <div>
-                                <span className="text-xs text-muted-foreground uppercase tracking-wider">Total</span>
+                              <span className="text-xs text-muted-foreground uppercase tracking-wider">Total</span>
                                 <p className="font-bold text-xl bg-gradient-to-r from-amber-600 to-pink-600 bg-clip-text text-transparent">
-                                  Rs. {Number(order.total_amount).toLocaleString()}
+                                  Rs. {Number(order.total).toLocaleString()}
                                 </p>
                               </div>
                               <Button

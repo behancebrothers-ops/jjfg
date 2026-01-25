@@ -102,17 +102,13 @@ const ProductDetail = () => {
         } else {
           setProduct(data);
 
-          const { data: imagesData, error: imagesError } = await supabase
-            .from("product_images")
-            .select("image_url")
-            .eq("product_id", id)
-            .order("position", { ascending: true });
-
-          if (!imagesError && imagesData && imagesData.length > 0) {
-            const imageUrls = imagesData.map(img => img.image_url);
-            setProductImages(imageUrls);
+          // Use images array from product or fallback to image_url
+          if (data.images && Array.isArray(data.images) && data.images.length > 0) {
+            setProductImages(data.images);
+          } else if (data.image_url) {
+            setProductImages([data.image_url]);
           } else {
-            setProductImages(data.image_url ? [data.image_url] : []);
+            setProductImages([]);
           }
 
           const { data: variantsData, error: variantsError } = await supabase
