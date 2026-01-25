@@ -86,9 +86,9 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEOHead
-        title="LUXE - Premium Fashion Store | Shop Luxury Clothing & Accessories"
-        description="Discover timeless pieces that define modern elegance. Shop premium fashion clothing, designer accessories, and new arrivals at LUXE. Free shipping on orders over $100."
-        keywords="luxury fashion, premium clothing, designer accessories, men's fashion, women's fashion, new arrivals, cozy style, online fashion store"
+        title="SCENT LUXE - Premium Fragrance Boutique | Luxury Perfumes & Home Scents"
+        description="Discover exquisite fragrances that captivate the senses. Shop luxury perfumes, home scents, and exclusive collections at SCENT LUXE. Free shipping on orders over $100."
+        keywords="luxury perfumes, premium fragrances, designer scents, home fragrances, essential oils, niche perfumery, scent boutique"
         canonicalUrl="/"
         structuredData={generateLocalBusinessSchema()}
       />
@@ -100,12 +100,12 @@ const Index = () => {
       <AdvertisementPopup />
       <main id="main-content" className="flex-grow" role="main">
         {/* HERO SECTION – Full screen with elegant design */}
-        <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50/50 to-pink-50">
+        <section className="relative min-h-[90vh] overflow-hidden bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0">
             <img
               src={heroBanner}
-              alt="Cozy fashion for the soul"
+              alt="Luxury fragrance collection"
               className="w-full h-full object-cover"
               loading="eager"
               fetchPriority="high"
@@ -117,11 +117,11 @@ const Index = () => {
 
           {/* Floating Decorative Orbs */}
           <motion.div
-            className="absolute top-20 left-10 w-72 h-72 bg-amber-400/20 rounded-full blur-3xl pointer-events-none"
+            className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl pointer-events-none"
             animate={float}
           />
           <motion.div
-            className="absolute bottom-32 right-16 w-96 h-96 bg-pink-400/20 rounded-full blur-3xl pointer-events-none"
+            className="absolute bottom-32 right-16 w-96 h-96 bg-accent/20 rounded-full blur-3xl pointer-events-none"
             animate={{ ...float, transition: { ...float.transition, delay: 1 } }}
           />
 
@@ -139,21 +139,21 @@ const Index = () => {
                 initial={{ scale: 0, rotate: -10 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: "spring", stiffness: 300, delay: 0.3 }}
-                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(251, 191, 36, 0.4)" }}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(var(--accent) / 0.4)" }}
               >
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span className="text-sm font-semibold text-white/95">New Season • 2025</span>
+                <Sparkles className="w-4 h-4 text-accent" />
+                <span className="text-sm font-semibold text-white/95">New Collection • 2025</span>
               </motion.div>
 
               {/* Heading */}
-              <h1 className="mb-6 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight">
+              <h1 className="mb-6 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-bold leading-[1.1] tracking-tight">
                 <motion.span
-                  className="block bg-gradient-to-r from-amber-300 via-orange-200 to-pink-300 bg-clip-text text-transparent drop-shadow-lg"
+                  className="block bg-gradient-to-r from-accent via-primary-foreground to-accent bg-clip-text text-transparent drop-shadow-lg"
                   initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                  Redefine
+                  Discover
                 </motion.span>
                 <motion.span
                   className="block text-white drop-shadow-xl"
@@ -161,7 +161,7 @@ const Index = () => {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.6 }}
                 >
-                  Your Warmth
+                  Your Signature
                 </motion.span>
               </h1>
 
@@ -172,7 +172,7 @@ const Index = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7, duration: 0.6 }}
               >
-                Wrap yourself in handcrafted elegance. Where comfort meets timeless style.
+                Immerse yourself in exquisite fragrances. Where artistry meets olfactory elegance.
               </motion.p>
 
               {/* CTA Buttons */}
@@ -185,9 +185,9 @@ const Index = () => {
                 <Link to="/products" className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-base sm:text-lg px-8 py-6 rounded-xl font-bold group"
+                    className="w-full sm:w-auto bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground border-0 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 text-base sm:text-lg px-8 py-6 rounded-xl font-bold group"
                   >
-                    Explore Collection
+                    Explore Fragrances
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -197,7 +197,7 @@ const Index = () => {
                     variant="outline"
                     className="w-full sm:w-auto bg-white/10 backdrop-blur-md border-2 border-white/40 text-white hover:bg-white/20 hover:border-white/60 transition-all duration-300 text-base sm:text-lg px-8 py-6 rounded-xl font-semibold"
                   >
-                    New Arrivals
+                    New Scents
                   </Button>
                 </Link>
               </motion.div>
@@ -225,35 +225,35 @@ const Index = () => {
 
         {/* Personalized Recommendations */}
         <ProductRecommendations
-          title="Recommended for You"
+          title="Curated For You"
           limit={6}
         />
 
-        {/* CATEGORIES – Cozy Cards with Depth */}
+        {/* CATEGORIES – Scent Families */}
         <section className="bg-background py-20 sm:py-28">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <motion.div
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-100 to-pink-100 text-amber-800 font-semibold shadow-md border border-amber-200/50"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold shadow-md border border-primary/20"
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200 }}
                 viewport={{ once: true }}
               >
-                <Heart className="w-4 h-4 text-pink-500" />
-                Discover Your Vibe
+                <Heart className="w-4 h-4 text-accent" />
+                Find Your Essence
               </motion.div>
 
               <motion.h2
-                className="mt-6 text-3xl sm:text-4xl md:text-5xl font-bold text-foreground"
+                className="mt-6 text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
                 Shop by{" "}
-                <span className="bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
-                  Category
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Scent Family
                 </span>
               </motion.h2>
 
@@ -264,15 +264,15 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
               >
-                Curated with love — because every piece tells a story.
+                Crafted with passion — because every fragrance tells a story.
               </motion.p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { img: product3, title: "Men", desc: "Bold & Refined", link: "/products?category=men" },
-                { img: product1, title: "Women", desc: "Graceful & Flowing", link: "/products?category=women" },
-                { img: product2, title: "Accessories", desc: "Little Luxuries", link: "/products?category=accessories" },
+                { img: product3, title: "Woody & Oud", desc: "Deep & Mysterious", link: "/products?category=woody" },
+                { img: product1, title: "Floral & Rose", desc: "Elegant & Romantic", link: "/products?category=floral" },
+                { img: product2, title: "Fresh & Citrus", desc: "Light & Invigorating", link: "/products?category=fresh" },
               ].map((cat, i) => (
                 <motion.div
                   key={i}
@@ -308,29 +308,29 @@ const Index = () => {
         </section>
 
         {/* FEATURED PRODUCTS */}
-        <section className="bg-gradient-to-b from-background to-amber-50/30 py-20 sm:py-28">
+        <section className="bg-gradient-to-b from-background to-primary/5 py-20 sm:py-28">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <motion.div
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-100 to-pink-100 text-amber-800 font-semibold shadow-md"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold shadow-md"
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 transition={{ type: "spring" }}
                 viewport={{ once: true }}
               >
-                <Star className="w-4 h-4 text-amber-500" fill="currentColor" />
-                Trending Now
+                <Star className="w-4 h-4 text-accent" fill="currentColor" />
+                Bestsellers
               </motion.div>
 
               <motion.h2
-                className="mt-6 text-3xl sm:text-4xl md:text-5xl font-bold text-foreground"
+                className="mt-6 text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                Featured{" "}
-                <span className="bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
-                  Collection
+                Signature{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Fragrances
                 </span>
               </motion.h2>
             </div>
@@ -371,9 +371,9 @@ const Index = () => {
               <Link to="/products">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 px-8 py-6 rounded-xl font-bold group"
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 px-8 py-6 rounded-xl font-bold group"
                 >
-                  View All Products
+                  View All Fragrances
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -382,7 +382,7 @@ const Index = () => {
         </section>
 
         {/* NEWSLETTER */}
-        <section className="py-20 sm:py-28 bg-gradient-to-b from-amber-50/50 to-pink-50/50">
+        <section className="py-20 sm:py-28 bg-gradient-to-b from-primary/5 to-accent/5">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               className="max-w-3xl mx-auto bg-white/80 backdrop-blur-lg p-8 sm:p-12 rounded-2xl shadow-xl border border-border/50 text-center"
@@ -392,25 +392,25 @@ const Index = () => {
               viewport={{ once: true }}
             >
               <motion.div
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-100 to-pink-100 text-amber-800 font-semibold shadow-sm mb-6"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold shadow-sm mb-6"
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 transition={{ type: "spring", delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                <Sparkles className="w-4 h-4 text-amber-500" />
+                <Sparkles className="w-4 h-4 text-accent" />
                 Newsletter
               </motion.div>
 
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Stay in the{" "}
-                <span className="bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
-                  Warm Loop
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">
+                Join the{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Scent Circle
                 </span>
               </h2>
 
               <p className="text-muted-foreground mb-8 text-base sm:text-lg max-w-lg mx-auto">
-                First looks, secret drops, and cozy surprises — delivered with love to your inbox.
+                Exclusive launches, fragrance tips, and special offers — delivered straight to your inbox.
               </p>
 
               <form
@@ -427,14 +427,14 @@ const Index = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white shadow-md hover:shadow-lg transition-all px-6 rounded-xl font-semibold"
+                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-md hover:shadow-lg transition-all px-6 rounded-xl font-semibold"
                 >
                   Subscribe
                 </Button>
               </form>
 
               <p className="text-xs text-muted-foreground mt-4">
-                No spam. Just warmth. Unsubscribe anytime.
+                No spam. Pure elegance. Unsubscribe anytime.
               </p>
             </motion.div>
           </div>

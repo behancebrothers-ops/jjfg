@@ -106,9 +106,9 @@ export const Navigation = () => {
   }, []);
 
   const navLinks = useMemo(() => [
-    { to: "/products", label: "Shop" },
+    { to: "/products", label: "Fragrances" },
     { to: "/sale", label: "Sale", highlight: true },
-    { to: "/products?category=accessories", label: "Accessories", icon: "✨" },
+    { to: "/products?category=home-scents", label: "Home Scents", icon: "✨" },
     { to: "/new-arrivals", label: "New Arrivals" },
   ], []);
 
@@ -142,10 +142,10 @@ export const Navigation = () => {
                 }}
                 className="absolute -inset-2 bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 rounded-full opacity-0 group-hover:opacity-20 blur-xl transition-opacity"
               />
-              <Sparkles className="h-6 w-6 text-amber-500 relative z-10" />
-              <span className="text-2xl font-bold tracking-tighter relative z-10">
-                <span className="bg-gradient-to-r from-amber-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
-                  LUXE
+              <Sparkles className="h-6 w-6 text-primary relative z-10" />
+              <span className="text-2xl font-bold tracking-tighter relative z-10 font-serif">
+                <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                  SCENT LUXE
                 </span>
               </span>
             </motion.div>
