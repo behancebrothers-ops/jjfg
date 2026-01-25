@@ -9,11 +9,11 @@ interface PromoBanner {
   id: string;
   title: string;
   subtitle: string | null;
-  cta_text: string;
-  cta_link: string;
-  bg_gradient: string;
-  badge: string | null;
-  icon_type: string;
+  image_url: string | null;
+  link_url: string | null;
+  background_color: string | null;
+  text_color: string | null;
+  position: number;
 }
 
 interface SaleSettings {
@@ -35,31 +35,31 @@ const defaultPromos: PromoBanner[] = [
     id: "1",
     title: "Flash Sale",
     subtitle: "Up to 50% OFF — Limited Time Only!",
-    cta_text: "Shop Now",
-    cta_link: "/sale",
-    bg_gradient: "from-red-500 via-orange-500 to-amber-500",
-    icon_type: "zap",
-    badge: "HOT"
+    image_url: null,
+    link_url: "/sale",
+    background_color: "from-red-500 via-orange-500 to-amber-500",
+    text_color: null,
+    position: 0,
   },
   {
     id: "2",
     title: "New Season Collection",
     subtitle: "Fresh styles just dropped — Be the first to shop",
-    cta_text: "Discover Now",
-    cta_link: "/new-arrivals",
-    bg_gradient: "from-pink-500 via-purple-500 to-indigo-500",
-    icon_type: "sparkles",
-    badge: "NEW"
+    image_url: null,
+    link_url: "/new-arrivals",
+    background_color: "from-pink-500 via-purple-500 to-indigo-500",
+    text_color: null,
+    position: 1,
   },
   {
     id: "3",
     title: "Free Shipping",
     subtitle: "On all orders over PKR 5,000 — No code needed",
-    cta_text: "Start Shopping",
-    cta_link: "/products",
-    bg_gradient: "from-emerald-500 via-teal-500 to-cyan-500",
-    icon_type: "percent",
-    badge: null
+    image_url: null,
+    link_url: "/products",
+    background_color: "from-emerald-500 via-teal-500 to-cyan-500",
+    text_color: null,
+    position: 2,
   }
 ];
 
@@ -78,7 +78,7 @@ export const PromoBannerSlider = () => {
           .from("sale_settings")
           .select("sale_navbar_visible")
           .limit(1)
-          .single();
+          .maybeSingle();
 
         if (settingsData) {
           setIsVisible(settingsData.sale_navbar_visible);
@@ -163,7 +163,7 @@ export const PromoBannerSlider = () => {
   }
 
   const currentPromo = promos[currentIndex];
-  const IconComponent = iconMap[currentPromo.icon_type] || Zap;
+  const bgGradient = currentPromo.background_color || "from-amber-500 to-pink-500";
 
   return (
     <div 
@@ -178,7 +178,7 @@ export const PromoBannerSlider = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.4 }}
-          className={`relative bg-gradient-to-r ${currentPromo.bg_gradient} py-3 sm:py-4`}
+          className={`relative bg-gradient-to-r ${bgGradient} py-3 sm:py-4`}
         >
           {/* Background pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -200,16 +200,11 @@ export const PromoBannerSlider = () => {
 
               {/* Content */}
               <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-center sm:text-left">
-                {/* Icon & Badge */}
+                {/* Icon */}
                 <div className="flex items-center gap-2">
                   <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 text-white">
-                    <IconComponent className="h-6 w-6" />
+                    <Zap className="h-6 w-6" />
                   </div>
-                  {currentPromo.badge && (
-                    <span className="px-2 py-0.5 text-xs font-bold bg-white text-slate-900 rounded-full animate-pulse">
-                      {currentPromo.badge}
-                    </span>
-                  )}
                 </div>
 
                 {/* Text */}
@@ -224,15 +219,17 @@ export const PromoBannerSlider = () => {
                 </div>
 
                 {/* CTA Button */}
-                <Link to={currentPromo.cta_link}>
-                  <Button
-                    size="sm"
-                    className="bg-white text-slate-900 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all text-xs sm:text-sm px-4 py-1.5 rounded-full group"
-                  >
-                    {currentPromo.cta_text}
-                    <ChevronRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                  </Button>
-                </Link>
+                {currentPromo.link_url && (
+                  <Link to={currentPromo.link_url}>
+                    <Button
+                      size="sm"
+                      className="bg-white text-slate-900 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all text-xs sm:text-sm px-4 py-1.5 rounded-full group"
+                    >
+                      Shop Now
+                      <ChevronRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                    </Button>
+                  </Link>
+                )}
               </div>
 
               {/* Right Arrow - Hidden on mobile */}
