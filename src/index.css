@@ -2,135 +2,223 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Cozy Input & Select */
+/* Scent-Focused Luxury Input & Select */
 .input-cozy,
 .select-cozy {
-  @apply w-full px-4 py-3 bg-white/70 backdrop-blur-md border border-amber-200 rounded-xl shadow-md hover:shadow-lg placeholder:text-gray-400 text-gray-800 transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-500 disabled:opacity-60 disabled:cursor-not-allowed;
+  @apply w-full px-4 py-3 bg-card/70 backdrop-blur-md border border-border rounded-xl shadow-md hover:shadow-lg placeholder:text-muted-foreground text-foreground transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-60 disabled:cursor-not-allowed;
 }
 .input-cozy[type="email"],
 .input-cozy[type="tel"] {
-  @apply border-pink-200 focus:ring-pink-400 focus:border-pink-500;
+  @apply border-accent/30 focus:ring-accent focus:border-accent;
 }
 .select-cozy {
   @apply appearance-none bg-[length:16px_16px] bg-[position:right_1rem_center] bg-no-repeat;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23f59e0b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23d4af37' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
 }
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCENT LUXE - Premium Fragrance Design System
+   A sophisticated, sensory-evoking aesthetic for luxury scent products
+   All colors are HSL for consistency
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @layer base {
   :root {
-    --background: 28 40% 98%;
-    --foreground: 28 15% 15%;
+    /* ─────────────────────────────────────────────────────────────────────────
+       Core Palette: Warm ivory cream with deep purple and gold accents
+       Evokes: Elegance, Mystery, Warmth, Sensory luxury
+       ───────────────────────────────────────────────────────────────────────── */
+    --background: 45 30% 97%;
+    --foreground: 270 25% 15%;
 
-    --card: 30 50% 98%;
-    --card-foreground: 28 15% 15%;
+    --card: 45 40% 98%;
+    --card-foreground: 270 25% 15%;
 
-    --popover: 30 50% 98%;
-    --popover-foreground: 28 15% 15%;
+    --popover: 45 40% 99%;
+    --popover-foreground: 270 25% 15%;
 
-    --primary: 25 85% 58%;
-    --primary-foreground: 30 50% 98%;
+    /* Primary: Rich Amethyst Purple - mysterious and luxurious */
+    --primary: 270 45% 45%;
+    --primary-foreground: 45 40% 98%;
 
-    --secondary: 30 40% 94%;
-    --secondary-foreground: 28 15% 15%;
+    /* Secondary: Soft Lavender Mist */
+    --secondary: 270 20% 94%;
+    --secondary-foreground: 270 25% 20%;
 
-    --muted: 30 35% 92%;
-    --muted-foreground: 28 12% 42%;
+    /* Muted: Dusty Rose Gray */
+    --muted: 330 15% 92%;
+    --muted-foreground: 270 15% 45%;
 
-    --accent: 35 75% 62%;
-    --accent-foreground: 30 50% 98%;
+    /* Accent: Warm Gold - luxury and premium feel */
+    --accent: 42 75% 55%;
+    --accent-foreground: 270 25% 12%;
 
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 30 50% 98%;
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 45 40% 98%;
 
-    --border: 30 30% 88%;
-    --input: 30 30% 88%;
-    --ring: 25 85% 58%;
+    --border: 270 15% 88%;
+    --input: 270 15% 90%;
+    --ring: 270 45% 45%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    /* Cozy 2025 Design Tokens */
-    --primary-glow: 25 95% 72%;
-    --secondary-glow: 35 80% 75%;
-    --tertiary: 20 70% 55%;
-    --warm-cream: 40 50% 96%;
-    --soft-peach: 25 70% 88%;
-    --gradient-primary: linear-gradient(135deg, hsl(25 85% 58%) 0%, hsl(35 75% 62%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(35 75% 62%) 0%, hsl(45 70% 65%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(25 85% 58% / 0.08) 0%, hsl(35 75% 62% / 0.08) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(30 50% 98%) 0%, hsl(28 45% 97%) 100%);
-    --gradient-warm: linear-gradient(180deg, hsl(28 40% 98%) 0%, hsl(30 50% 96%) 50%, hsl(35 45% 95%) 100%);
-    --glass-bg: hsl(30 50% 98% / 0.85);
-    --glass-border: hsl(30 30% 88% / 0.3);
-    --shadow-sm: 0 2px 12px hsl(28 25% 25% / 0.06);
-    --shadow-md: 0 4px 20px hsl(28 25% 25% / 0.1);
-    --shadow-lg: 0 8px 36px hsl(28 25% 25% / 0.14);
-    --shadow-glow: 0 0 32px hsl(25 85% 58% / 0.3);
-    --shadow-soft: 0 4px 24px hsl(25 70% 70% / 0.2);
+    /* ─────────────────────────────────────────────────────────────────────────
+       Scent Luxe Extended Palette
+       ───────────────────────────────────────────────────────────────────────── */
+    --primary-glow: 270 55% 65%;
+    --secondary-glow: 42 80% 70%;
+    --tertiary: 320 40% 50%;
+
+    /* Signature Scent Colors */
+    --rose-mist: 340 45% 92%;
+    --amber-warm: 35 60% 70%;
+    --oud-dark: 25 35% 25%;
+    --jasmine-cream: 50 50% 95%;
+    --musk-soft: 15 20% 85%;
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       Gradients - Evoking the ethereal nature of scents
+       ───────────────────────────────────────────────────────────────────────── */
+    --gradient-primary: linear-gradient(135deg, hsl(270 45% 45%) 0%, hsl(320 40% 50%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(42 75% 55%) 0%, hsl(35 70% 60%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(270 45% 45% / 0.08) 0%, hsl(42 75% 55% / 0.08) 50%, hsl(320 40% 50% / 0.06) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(45 40% 99%) 0%, hsl(45 35% 97%) 100%);
+    --gradient-warm: linear-gradient(180deg, hsl(45 30% 97%) 0%, hsl(340 20% 96%) 50%, hsl(270 15% 95%) 100%);
+
+    /* Scent Mist Gradient - ethereal, flowing */
+    --gradient-mist: linear-gradient(135deg, 
+      hsl(270 30% 95% / 0.9) 0%, 
+      hsl(320 25% 94% / 0.7) 50%, 
+      hsl(42 40% 95% / 0.8) 100%
+    );
+
+    /* Luxury Gold Shimmer */
+    --gradient-gold: linear-gradient(135deg, hsl(42 75% 55%) 0%, hsl(45 80% 65%) 50%, hsl(38 70% 50%) 100%);
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       Glass & Transparency Effects - Like perfume bottles
+       ───────────────────────────────────────────────────────────────────────── */
+    --glass-bg: hsl(45 40% 98% / 0.85);
+    --glass-border: hsl(270 20% 85% / 0.4);
+    --glass-shimmer: hsl(42 75% 70% / 0.15);
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       Shadows - Soft, luxurious, dimensional
+       ───────────────────────────────────────────────────────────────────────── */
+    --shadow-sm: 0 2px 12px hsl(270 30% 30% / 0.06);
+    --shadow-md: 0 4px 24px hsl(270 30% 30% / 0.08);
+    --shadow-lg: 0 12px 40px hsl(270 30% 30% / 0.12);
+    --shadow-glow: 0 0 40px hsl(270 45% 45% / 0.25);
+    --shadow-soft: 0 4px 24px hsl(42 60% 50% / 0.15);
+    --shadow-gold: 0 4px 30px hsl(42 75% 55% / 0.3);
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       Transitions - Smooth, sensory, elegant
+       ───────────────────────────────────────────────────────────────────────── */
     --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-spring: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
     --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-mist: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-    /* Admin Panel Design Tokens */
-    --admin-gradient-primary: linear-gradient(135deg, hsl(230 75% 55%) 0%, hsl(280 70% 55%) 100%);
-    --admin-gradient-secondary: linear-gradient(135deg, hsl(280 60% 50%) 0%, hsl(320 65% 55%) 100%);
-    --admin-gradient-success: linear-gradient(135deg, hsl(160 70% 45%) 0%, hsl(140 65% 50%) 100%);
-    --admin-gradient-warning: linear-gradient(135deg, hsl(35 90% 55%) 0%, hsl(25 85% 55%) 100%);
-    --admin-gradient-danger: linear-gradient(135deg, hsl(0 75% 55%) 0%, hsl(350 70% 50%) 100%);
-    --admin-gradient-info: linear-gradient(135deg, hsl(200 85% 55%) 0%, hsl(180 75% 50%) 100%);
-    --admin-bg: linear-gradient(180deg, hsl(230 25% 98%) 0%, hsl(240 20% 96%) 50%, hsl(250 15% 95%) 100%);
+    /* ─────────────────────────────────────────────────────────────────────────
+       Admin Panel Design Tokens
+       ───────────────────────────────────────────────────────────────────────── */
+    --admin-gradient-primary: linear-gradient(135deg, hsl(270 50% 50%) 0%, hsl(320 45% 50%) 100%);
+    --admin-gradient-secondary: linear-gradient(135deg, hsl(42 70% 55%) 0%, hsl(35 65% 50%) 100%);
+    --admin-gradient-success: linear-gradient(135deg, hsl(160 60% 45%) 0%, hsl(140 55% 50%) 100%);
+    --admin-gradient-warning: linear-gradient(135deg, hsl(42 80% 55%) 0%, hsl(35 75% 50%) 100%);
+    --admin-gradient-danger: linear-gradient(135deg, hsl(0 65% 50%) 0%, hsl(350 60% 45%) 100%);
+    --admin-gradient-info: linear-gradient(135deg, hsl(200 70% 55%) 0%, hsl(180 65% 50%) 100%);
+    --admin-bg: linear-gradient(180deg, hsl(45 25% 98%) 0%, hsl(270 15% 96%) 50%, hsl(320 10% 95%) 100%);
     --admin-card: hsl(0 0% 100%);
-    --admin-shadow: 0 4px 24px hsl(230 30% 20% / 0.08);
-    --admin-shadow-lg: 0 12px 48px hsl(230 30% 20% / 0.12);
-    --sale-gradient: linear-gradient(135deg, hsl(0 85% 55%) 0%, hsl(35 90% 55%) 100%);
-    --promo-gradient: linear-gradient(135deg, hsl(280 75% 55%) 0%, hsl(320 70% 55%) 100%);
+    --admin-shadow: 0 4px 24px hsl(270 30% 25% / 0.08);
+    --admin-shadow-lg: 0 12px 48px hsl(270 30% 25% / 0.12);
+    --sale-gradient: linear-gradient(135deg, hsl(320 60% 50%) 0%, hsl(270 50% 50%) 100%);
+    --promo-gradient: linear-gradient(135deg, hsl(42 75% 55%) 0%, hsl(35 70% 50%) 100%);
+
+    /* Sidebar tokens */
+    --sidebar-background: 270 25% 12%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 42 75% 55%;
+    --sidebar-primary-foreground: 270 25% 12%;
+    --sidebar-accent: 270 40% 30%;
+    --sidebar-accent-foreground: 45 30% 95%;
+    --sidebar-border: 270 20% 20%;
+    --sidebar-ring: 42 75% 55%;
   }
 
+  /* ═══════════════════════════════════════════════════════════════════════════
+     DARK MODE - Deep, mysterious, luxurious night
+     Evokes: Oud, night-blooming jasmine, intimate luxury
+     ═══════════════════════════════════════════════════════════════════════════ */
   .dark {
-    --background: 28 15% 12%;
-    --foreground: 30 50% 95%;
+    --background: 270 25% 8%;
+    --foreground: 45 30% 95%;
 
-    --card: 28 20% 16%;
-    --card-foreground: 30 50% 95%;
+    --card: 270 22% 12%;
+    --card-foreground: 45 30% 95%;
 
-    --popover: 28 20% 16%;
-    --popover-foreground: 30 50% 95%;
+    --popover: 270 22% 14%;
+    --popover-foreground: 45 30% 95%;
 
-    --primary: 25 85% 58%;
-    --primary-foreground: 30 50% 98%;
+    /* Primary: Luminous Amethyst */
+    --primary: 270 55% 60%;
+    --primary-foreground: 270 25% 8%;
 
-    --secondary: 28 15% 22%;
-    --secondary-foreground: 30 50% 95%;
+    /* Secondary: Deep Plum */
+    --secondary: 270 20% 18%;
+    --secondary-foreground: 45 30% 90%;
 
-    --muted: 28 15% 22%;
-    --muted-foreground: 30 30% 65%;
+    /* Muted: Dusty Night */
+    --muted: 270 15% 20%;
+    --muted-foreground: 45 20% 60%;
 
-    --accent: 35 75% 62%;
-    --accent-foreground: 30 50% 98%;
+    /* Accent: Warm Champagne Gold */
+    --accent: 42 70% 60%;
+    --accent-foreground: 270 25% 8%;
 
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 30 50% 98%;
+    --destructive: 0 60% 55%;
+    --destructive-foreground: 45 30% 95%;
 
-    --border: 28 20% 28%;
-    --input: 28 20% 28%;
-    --ring: 25 85% 58%;
+    --border: 270 18% 22%;
+    --input: 270 18% 20%;
+    --ring: 270 55% 60%;
 
-    /* Dark mode adjustments */
-    --gradient-hero: linear-gradient(135deg, hsl(25 85% 58% / 0.12) 0%, hsl(35 75% 62% / 0.12) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(28 20% 16%) 0%, hsl(28 20% 18%) 100%);
-    --gradient-warm: linear-gradient(180deg, hsl(28 15% 12%) 0%, hsl(28 18% 14%) 50%, hsl(28 20% 16%) 100%);
-    --glass-bg: hsl(28 20% 16% / 0.85);
-    --glass-border: hsl(28 20% 28% / 0.3);
-    --shadow-glow: 0 0 32px hsl(25 85% 58% / 0.4);
-    --shadow-soft: 0 4px 24px hsl(25 70% 70% / 0.15);
+    /* Dark Mode Extended */
+    --primary-glow: 270 60% 70%;
+    --secondary-glow: 42 75% 70%;
 
-    /* Admin Panel Dark Mode */
-    --admin-bg: linear-gradient(180deg, hsl(230 20% 12%) 0%, hsl(240 20% 10%) 50%, hsl(250 18% 8%) 100%);
-    --admin-card: hsl(230 20% 16%);
-    --admin-shadow: 0 4px 24px hsl(230 30% 5% / 0.3);
-    --admin-shadow-lg: 0 12px 48px hsl(230 30% 5% / 0.4);
+    /* Dark Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(270 55% 60% / 0.12) 0%, hsl(42 70% 60% / 0.1) 50%, hsl(320 40% 50% / 0.08) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(270 22% 14%) 0%, hsl(270 20% 12%) 100%);
+    --gradient-warm: linear-gradient(180deg, hsl(270 25% 8%) 0%, hsl(270 20% 10%) 50%, hsl(270 22% 12%) 100%);
+    --gradient-mist: linear-gradient(135deg, 
+      hsl(270 30% 15% / 0.9) 0%, 
+      hsl(320 25% 18% / 0.7) 50%, 
+      hsl(42 30% 20% / 0.8) 100%
+    );
+    --glass-bg: hsl(270 22% 12% / 0.9);
+    --glass-border: hsl(270 20% 30% / 0.4);
+    --glass-shimmer: hsl(42 70% 60% / 0.1);
+    --shadow-glow: 0 0 50px hsl(270 55% 60% / 0.35);
+    --shadow-soft: 0 4px 30px hsl(42 60% 50% / 0.12);
+    --shadow-gold: 0 4px 35px hsl(42 70% 60% / 0.25);
+
+    /* Admin Dark Mode */
+    --admin-bg: linear-gradient(180deg, hsl(270 22% 10%) 0%, hsl(270 20% 8%) 50%, hsl(270 18% 6%) 100%);
+    --admin-card: hsl(270 20% 14%);
+    --admin-shadow: 0 4px 24px hsl(270 40% 5% / 0.4);
+    --admin-shadow-lg: 0 12px 48px hsl(270 40% 5% / 0.5);
+
+    /* Sidebar Dark */
+    --sidebar-background: 270 28% 6%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 42 70% 60%;
+    --sidebar-primary-foreground: 270 25% 8%;
+    --sidebar-accent: 270 35% 18%;
+    --sidebar-accent-foreground: 45 30% 95%;
+    --sidebar-border: 270 20% 16%;
+    --sidebar-ring: 42 70% 60%;
   }
 }
 
@@ -148,11 +236,11 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter var', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-feature-settings: 'cv11', 'ss01';
+    font-family: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+    font-feature-settings: 'kern', 'liga';
     font-optical-sizing: auto;
-    /* GPU acceleration for smoother scrolling */
     -webkit-overflow-scrolling: touch;
+    letter-spacing: 0.01em;
   }
 
   /* Optimize image rendering */
@@ -185,24 +273,34 @@ All colors MUST be HSL.
     }
   }
 
+  /* Typography - Elegant, Refined */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight;
-    font-feature-settings: 'cv11', 'ss01';
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    @apply font-semibold tracking-wide;
+    font-feature-settings: 'kern', 'liga';
   }
 
   h1 {
     @apply text-4xl md:text-5xl lg:text-6xl;
+    letter-spacing: 0.04em;
   }
 
   h2 {
     @apply text-3xl md:text-4xl lg:text-5xl;
+    letter-spacing: 0.03em;
   }
 
   h3 {
     @apply text-2xl md:text-3xl;
+    letter-spacing: 0.02em;
   }
 
-  /* Enhanced input styling for better UX */
+  /* Body text uses a more readable sans-serif */
+  p, span, li, label, input, textarea, select, button {
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Enhanced input styling */
   input[type="checkbox"],
   input[type="radio"] {
     @apply cursor-pointer;
@@ -224,26 +322,29 @@ All colors MUST be HSL.
     @apply outline-none ring-2 ring-ring ring-offset-2;
   }
 
-  /* Custom scrollbar */
+  /* Elegant Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-secondary;
+    @apply bg-muted/50;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/30 rounded-full;
+    @apply bg-primary/30 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/50;
+    @apply bg-primary/50;
   }
 }
 
 @layer utilities {
+  /* ─────────────────────────────────────────────────────────────────────────
+     Gradient Utilities
+     ───────────────────────────────────────────────────────────────────────── */
   .hero-gradient {
     background: var(--gradient-hero);
   }
@@ -252,29 +353,113 @@ All colors MUST be HSL.
     background: var(--gradient-primary);
   }
 
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+
   .gradient-card {
     background: var(--gradient-card);
   }
 
+  .gradient-warm {
+    background: var(--gradient-warm);
+  }
+
+  .gradient-mist {
+    background: var(--gradient-mist);
+  }
+
+  .gradient-gold {
+    background: var(--gradient-gold);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Glass & Card Effects - Perfume Bottle Inspired
+     ───────────────────────────────────────────────────────────────────────── */
   .glass-card {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .glass-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-shimmer::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 40%,
+      var(--glass-shimmer) 50%,
+      transparent 60%
+    );
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(100%) rotate(45deg);
+    }
   }
 
   .card-modern {
     transition: var(--transition-smooth);
     box-shadow: var(--shadow-md);
     will-change: transform, box-shadow;
-    transform: translateZ(0); /* GPU acceleration */
+    transform: translateZ(0);
   }
 
   .card-modern:hover {
     box-shadow: var(--shadow-lg);
-    transform: translateY(-8px) scale(1.02) translateZ(0);
+    transform: translateY(-8px) scale(1.01) translateZ(0);
   }
 
+  /* Scent Card - Special product card for fragrances */
+  .scent-card {
+    background: var(--gradient-card);
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-mist);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-gold);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .scent-card:hover {
+    box-shadow: var(--shadow-lg), var(--shadow-gold);
+    transform: translateY(-6px);
+  }
+
+  .scent-card:hover::before {
+    opacity: 1;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Button Effects
+     ───────────────────────────────────────────────────────────────────────── */
   .btn-glow {
     box-shadow: var(--shadow-glow);
     transition: var(--transition-smooth);
@@ -282,7 +467,18 @@ All colors MUST be HSL.
   }
 
   .btn-glow:hover {
-    box-shadow: 0 0 40px hsl(25 85% 58% / 0.5);
+    box-shadow: 0 0 50px hsl(270 55% 60% / 0.45);
+    transform: translateY(-2px);
+  }
+
+  .btn-gold {
+    background: var(--gradient-gold);
+    box-shadow: var(--shadow-gold);
+    transition: var(--transition-smooth);
+  }
+
+  .btn-gold:hover {
+    box-shadow: 0 6px 35px hsl(42 75% 55% / 0.45);
     transform: translateY(-2px);
   }
 
@@ -293,28 +489,39 @@ All colors MUST be HSL.
     perspective: 1000px;
   }
 
+  /* ─────────────────────────────────────────────────────────────────────────
+     Animations - Soft, ethereal, sensory
+     ───────────────────────────────────────────────────────────────────────── */
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .animate-mist {
+    animation: mist 6s ease-in-out infinite;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
+    animation: slideUp 0.7s ease-out;
   }
 
   .animate-fade-in {
-    animation: fadeIn 0.8s ease-out;
+    animation: fadeIn 1s ease-out;
   }
 
   .animate-slide-in-left {
-    animation: slideInLeft 0.7s ease-out;
+    animation: slideInLeft 0.8s ease-out;
   }
 
   .animate-slide-in-right {
-    animation: slideInRight 0.7s ease-out;
+    animation: slideInRight 0.8s ease-out;
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.5s ease-out;
+    animation: scaleIn 0.6s ease-out;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 3s ease-in-out infinite;
   }
 
   @keyframes float {
@@ -322,14 +529,25 @@ All colors MUST be HSL.
       transform: translateY(0px);
     }
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes mist {
+    0%, 100% {
+      opacity: 0.7;
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-8px) scale(1.02);
     }
   }
 
   @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(40px);
     }
     to {
       opacity: 1;
@@ -349,7 +567,7 @@ All colors MUST be HSL.
   @keyframes slideInLeft {
     from {
       opacity: 0;
-      transform: translateX(-50px);
+      transform: translateX(-60px);
     }
     to {
       opacity: 1;
@@ -360,7 +578,7 @@ All colors MUST be HSL.
   @keyframes slideInRight {
     from {
       opacity: 0;
-      transform: translateX(50px);
+      transform: translateX(60px);
     }
     to {
       opacity: 1;
@@ -371,7 +589,7 @@ All colors MUST be HSL.
   @keyframes scaleIn {
     from {
       opacity: 0;
-      transform: scale(0.9);
+      transform: scale(0.92);
     }
     to {
       opacity: 1;
@@ -379,6 +597,18 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes pulseSoft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Text Effects
+     ───────────────────────────────────────────────────────────────────────── */
   .text-gradient {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -386,6 +616,37 @@ All colors MUST be HSL.
     background-clip: text;
   }
 
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Elegant underline animation */
+  .link-elegant {
+    position: relative;
+    text-decoration: none;
+  }
+
+  .link-elegant::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gradient-gold);
+    transition: width 0.4s ease;
+  }
+
+  .link-elegant:hover::after {
+    width: 100%;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Hover & Interaction
+     ───────────────────────────────────────────────────────────────────────── */
   .hover-lift {
     transition: var(--transition-spring);
   }
@@ -394,18 +655,32 @@ All colors MUST be HSL.
     transform: translateY(-4px);
   }
 
-  .gradient-warm {
-    background: var(--gradient-warm);
+  .hover-glow {
+    transition: var(--transition-mist);
   }
 
-  .gradient-secondary {
-    background: var(--gradient-secondary);
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
   }
 
+  /* ─────────────────────────────────────────────────────────────────────────
+     Shadow Utilities
+     ───────────────────────────────────────────────────────────────────────── */
   .shadow-soft {
     box-shadow: var(--shadow-soft);
   }
 
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Legacy Compatibility
+     ───────────────────────────────────────────────────────────────────────── */
   .cozy-card {
     background: var(--gradient-card);
     border: 1px solid hsl(var(--border));
