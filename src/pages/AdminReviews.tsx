@@ -28,7 +28,10 @@ interface Review {
   product_id: string;
   user_id: string;
   rating: number;
-  review_text: string | null;
+  comment: string | null;
+  title: string | null;
+  is_approved: boolean | null;
+  is_verified: boolean | null;
   created_at: string;
   updated_at: string;
 }
@@ -48,7 +51,7 @@ export default function AdminReviews() {
         .order("created_at", { ascending: false });
 
       if (searchQuery) {
-        query = query.ilike("review_text", `%${searchQuery}%`);
+        query = query.ilike("comment", `%${searchQuery}%`);
       }
 
       if (ratingFilter !== "all") {
@@ -242,9 +245,9 @@ export default function AdminReviews() {
                             </div>
 
                             {/* Review Text */}
-                            {review.review_text && (
+                            {review.comment && (
                               <p className="text-sm text-muted-foreground leading-relaxed">
-                                {review.review_text}
+                                {review.comment}
                               </p>
                             )}
                           </div>

@@ -38,7 +38,7 @@ interface DashboardStats {
 interface RecentOrder {
   id: string;
   order_number: string;
-  total_amount: number;
+  total: number;
   status: string;
   created_at: string;
   customer_name?: string;
@@ -91,22 +91,22 @@ export default function AdminDashboard() {
         topProductsRes,
       ] = await Promise.all([
         supabase.from("products").select("*", { count: "exact", head: true }),
-        supabase.from("orders").select("total_amount, created_at, status"),
+        supabase.from("orders").select("total, created_at, status"),
         supabase.from("profiles").select("*", { count: "exact", head: true }),
         supabase.from("products").select("*", { count: "exact", head: true }).lte("stock", 10),
         supabase.from("orders").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("orders").select("id, order_number, total_amount, status, created_at, user_id").order("created_at", { ascending: false }).limit(5),
+        supabase.from("orders").select("id, order_number, total, status, created_at, user_id").order("created_at", { ascending: false }).limit(5),
         supabase.from("products").select("id, name, category, stock, price").order("stock", { ascending: true }).limit(5),
       ]);
 
       // Calculate revenue and order stats
       const allOrders = ordersRes.data || [];
-      const revenue = allOrders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+      const revenue = allOrders.reduce((sum, order) => sum + (order.total || 0), 0);
       
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const todayOrders = allOrders.filter(o => new Date(o.created_at) >= today);
-      const todayRevenue = todayOrders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+      const todayRevenue = todayOrders.reduce((sum, order) => sum + (order.total || 0), 0);
 
       setStats({
         totalProducts: productsRes.count || 0,
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
 
         last7Days.push({
           date: format(date, "MMM dd"),
-          revenue: dayOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0),
+          revenue: dayOrders.reduce((sum, o) => sum + (o.total || 0), 0),
           orders: dayOrders.length,
         });
       }
@@ -443,7 +443,7 @@ export default function AdminDashboard() {
                           <p className="text-xs text-slate-500">{order.customer_name}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-emerald-600 text-sm">PKR {Number(order.total_amount).toLocaleString()}</p>
+                          <p className="font-semibold text-emerald-600 text-sm">PKR {Number(order.total).toLocaleString()}</p>
                           <Badge variant="outline" className={`text-xs ${getStatusColor(order.status)}`}>
                             {order.status}
                           </Badge>

@@ -20,7 +20,8 @@ type Category = {
   name: string;
   slug: string;
   description: string | null;
-  active: boolean;
+  image_url: string | null;
+  parent_id: string | null;
   created_at: string;
 };
 
@@ -35,7 +36,6 @@ const AdminCategories = () => {
     name: "",
     slug: "",
     description: "",
-    active: true,
   });
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const AdminCategories = () => {
 
   const handleAdd = () => {
     setSelectedCategory(null);
-    setFormData({ name: "", slug: "", description: "", active: true });
+    setFormData({ name: "", slug: "", description: "" });
     setShowDialog(true);
   };
 
@@ -71,7 +71,6 @@ const AdminCategories = () => {
       name: category.name,
       slug: category.slug,
       description: category.description || "",
-      active: category.active,
     });
     setShowDialog(true);
   };
@@ -188,7 +187,7 @@ const AdminCategories = () => {
                     <TableHead>Name</TableHead>
                     <TableHead>Slug</TableHead>
                     <TableHead>Description</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Parent</TableHead>
                     <TableHead>Created</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -208,10 +207,8 @@ const AdminCategories = () => {
                         <TableCell className="max-w-xs truncate">
                           {category.description || "-"}
                         </TableCell>
-                        <TableCell>
-                          <Badge variant={category.active ? "default" : "secondary"}>
-                            {category.active ? "Active" : "Inactive"}
-                          </Badge>
+                        <TableCell className="text-muted-foreground">
+                          {category.parent_id ? "Has Parent" : "-"}
                         </TableCell>
                         <TableCell className="text-muted-foreground">
                           {new Date(category.created_at).toLocaleDateString()}
@@ -286,15 +283,6 @@ const AdminCategories = () => {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Enter category description"
                 rows={3}
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="active">Active</Label>
-              <Switch
-                id="active"
-                checked={formData.active}
-                onCheckedChange={(active) => setFormData({ ...formData, active })}
               />
             </div>
 

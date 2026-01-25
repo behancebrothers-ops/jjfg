@@ -49,24 +49,15 @@ const Checkout = () => {
     country: "",
   });
 
-  // Fetch shipping methods
+  // Hardcoded shipping methods since the table doesn't exist
   useEffect(() => {
-    const fetchShippingMethods = async () => {
-      const { data, error } = await supabase
-        .from('shipping_methods')
-        .select('*')
-        .eq('active', true)
-        .order('base_cost', { ascending: true });
-
-      if (!error && data) {
-        setShippingMethods(data);
-        if (data.length > 0) {
-          setSelectedShippingMethod(data[0]); // Default to cheapest
-        }
-      }
-    };
-
-    fetchShippingMethods();
+    // Set default shipping methods
+    const defaultShippingMethods: ShippingMethod[] = [
+      { id: '1', name: 'Standard Shipping', description: 'Delivery in 5-7 business days', base_cost: 500, estimated_days_min: 5, estimated_days_max: 7 },
+      { id: '2', name: 'Express Shipping', description: 'Delivery in 2-3 business days', base_cost: 1000, estimated_days_min: 2, estimated_days_max: 3 },
+    ];
+    setShippingMethods(defaultShippingMethods);
+    setSelectedShippingMethod(defaultShippingMethods[0]);
   }, []);
 
   // Auto-fill user data from database
@@ -84,38 +75,25 @@ const Checkout = () => {
           .eq('id', session.user.id)
           .maybeSingle();
 
-        // Fetch default address or first available address
-        const { data: addresses } = await supabase
-          .from('customer_addresses')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .order('is_default', { ascending: false })
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        const defaultAddress = addresses?.[0];
-
-        // Auto-fill form with profile and address data
-        if (profile || defaultAddress) {
-          const fullName = defaultAddress?.full_name || profile?.full_name || "";
+        // Auto-fill form with profile data
+        if (profile) {
+          const fullName = profile.full_name || "";
           const [firstName = "", ...lastNameParts] = fullName.split(" ");
           const lastName = lastNameParts.join(" ");
 
           setFormData({
-            email: profile?.email || session.user.email || "",
-            phone: defaultAddress?.phone || profile?.phone || "",
+            email: profile.email || session.user.email || "",
+            phone: profile.phone || "",
             firstName: firstName,
             lastName: lastName,
-            address: defaultAddress?.address_line1 || profile?.address_line1 || "",
-            city: defaultAddress?.city || profile?.city || "",
-            state: defaultAddress?.state || profile?.state || "",
-            zip: defaultAddress?.postal_code || profile?.postal_code || "",
-            country: defaultAddress?.country || profile?.country || "",
+            address: profile.address || "",
+            city: profile.city || "",
+            state: "",
+            zip: profile.postal_code || "",
+            country: profile.country || "",
           });
 
-          if (profile || defaultAddress) {
-            toast.success("Your information has been loaded", { duration: 2000 });
-          }
+          toast.success("Your information has been loaded", { duration: 2000 });
         }
       } catch (error) {
         console.error("Error fetching user data:", error);

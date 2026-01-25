@@ -11,39 +11,38 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Pencil, Trash2, Zap, Gift, Percent, Sparkles, Clock, Tag, Eye, EyeOff, CreditCard } from "lucide-react";
+import { Plus, Pencil, Trash2, Zap, Gift, Percent, Sparkles, Clock, Tag, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { TableSkeleton } from "@/components/admin/TableSkeleton";
 
 type SaleSettings = {
   id: string;
-  sale_navbar_visible: boolean;
-  sale_active: boolean;
+  sale_navbar_visible: boolean | null;
   sale_title: string | null;
-  sale_subtitle: string | null;
+  sale_description: string | null;
+  sale_end_date: string | null;
 };
 
 type SaleBanner = {
   id: string;
   title: string;
   subtitle: string | null;
-  cta_text: string;
-  cta_link: string;
-  bg_gradient: string;
-  badge: string | null;
-  icon_type: string;
-  position: number;
-  active: boolean;
+  background_color: string | null;
+  text_color: string | null;
+  image_url: string | null;
+  link_url: string | null;
+  position: number | null;
+  active: boolean | null;
 };
 
 type Product = {
   id: string;
   name: string;
   price: number;
-  sale_price: number | null;
+  compare_at_price: number | null;
   image_url: string | null;
-  stripe_enabled: boolean;
+  is_on_sale: boolean | null;
 };
 
 const iconOptions = [
@@ -53,15 +52,6 @@ const iconOptions = [
   { value: "sparkles", label: "Sparkles", icon: Sparkles },
   { value: "clock", label: "Limited Time", icon: Clock },
   { value: "tag", label: "Price Tag", icon: Tag },
-];
-
-const gradientOptions = [
-  { value: "from-red-500 via-orange-500 to-amber-500", label: "Fire", preview: "bg-gradient-to-r from-red-500 via-orange-500 to-amber-500" },
-  { value: "from-slate-900 via-slate-800 to-slate-700", label: "Dark", preview: "bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700" },
-  { value: "from-pink-500 via-purple-500 to-indigo-500", label: "Purple Dream", preview: "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500" },
-  { value: "from-emerald-500 via-teal-500 to-cyan-500", label: "Ocean", preview: "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" },
-  { value: "from-yellow-400 via-orange-500 to-red-500", label: "Sunset", preview: "bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500" },
-  { value: "from-blue-600 via-blue-500 to-cyan-400", label: "Sky", preview: "bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-400" },
 ];
 
 const AdminSale = () => {
@@ -75,11 +65,10 @@ const AdminSale = () => {
   const [bannerFormData, setBannerFormData] = useState({
     title: "",
     subtitle: "",
-    cta_text: "Shop Now",
-    cta_link: "/sale",
-    bg_gradient: "from-red-500 via-orange-500 to-amber-500",
-    badge: "",
-    icon_type: "zap",
+    background_color: "#ff5555",
+    text_color: "#ffffff",
+    image_url: "",
+    link_url: "/sale",
     active: true,
   });
 
@@ -95,7 +84,7 @@ const AdminSale = () => {
         .from("sale_settings")
         .select("*")
         .limit(1)
-        .single();
+        .maybeSingle();
       
       if (settingsData) {
         setSettings(settingsData);
@@ -109,10 +98,10 @@ const AdminSale = () => {
       
       setBanners(bannersData || []);
 
-      // Fetch products with sale prices
+      // Fetch products on sale
       const { data: productsData } = await supabase
         .from("products")
-        .select("id, name, price, sale_price, image_url, stripe_enabled")
+        .select("id, name, price, compare_at_price, image_url, is_on_sale")
         .order("name", { ascending: true });
       
       setProducts(productsData || []);
@@ -142,19 +131,19 @@ const AdminSale = () => {
     }
   };
 
-  const toggleProductStripe = async (productId: string, enabled: boolean) => {
+  const toggleProductSale = async (productId: string, isOnSale: boolean) => {
     try {
       const { error } = await supabase
         .from("products")
-        .update({ stripe_enabled: enabled })
+        .update({ is_on_sale: isOnSale })
         .eq("id", productId);
 
       if (error) throw error;
       
       setProducts(products.map(p => 
-        p.id === productId ? { ...p, stripe_enabled: enabled } : p
+        p.id === productId ? { ...p, is_on_sale: isOnSale } : p
       ));
-      toast.success(`Stripe ${enabled ? 'enabled' : 'disabled'} for product`);
+      toast.success(`Sale ${isOnSale ? 'enabled' : 'disabled'} for product`);
     } catch (error: any) {
       toast.error(error.message || "Failed to update product");
     }
@@ -165,11 +154,10 @@ const AdminSale = () => {
     setBannerFormData({
       title: "",
       subtitle: "",
-      cta_text: "Shop Now",
-      cta_link: "/sale",
-      bg_gradient: "from-red-500 via-orange-500 to-amber-500",
-      badge: "",
-      icon_type: "zap",
+      background_color: "#ff5555",
+      text_color: "#ffffff",
+      image_url: "",
+      link_url: "/sale",
       active: true,
     });
     setShowBannerDialog(true);
@@ -180,12 +168,11 @@ const AdminSale = () => {
     setBannerFormData({
       title: banner.title,
       subtitle: banner.subtitle || "",
-      cta_text: banner.cta_text,
-      cta_link: banner.cta_link,
-      bg_gradient: banner.bg_gradient,
-      badge: banner.badge || "",
-      icon_type: banner.icon_type,
-      active: banner.active,
+      background_color: banner.background_color || "#ff5555",
+      text_color: banner.text_color || "#ffffff",
+      image_url: banner.image_url || "",
+      link_url: banner.link_url || "/sale",
+      active: banner.active ?? true,
     });
     setShowBannerDialog(true);
   };
@@ -242,12 +229,7 @@ const AdminSale = () => {
     }
   };
 
-  const getIconComponent = (iconType: string) => {
-    const option = iconOptions.find(o => o.value === iconType);
-    return option ? option.icon : Zap;
-  };
-
-  const saleProducts = products.filter(p => p.sale_price !== null);
+  const saleProducts = products.filter(p => p.is_on_sale || (p.compare_at_price && p.compare_at_price > p.price));
 
   return (
     <ProtectedAdminRoute>
@@ -259,7 +241,7 @@ const AdminSale = () => {
               Sale Management
             </h1>
             <p className="text-muted-foreground mt-2">
-              Manage sales, promotional banners, and Stripe settings
+              Manage sales, promotional banners, and product discounts
             </p>
           </div>
 
@@ -267,11 +249,10 @@ const AdminSale = () => {
             <TableSkeleton />
           ) : (
             <Tabs defaultValue="settings" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+              <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
                 <TabsTrigger value="settings">Settings</TabsTrigger>
                 <TabsTrigger value="banners">Banners</TabsTrigger>
                 <TabsTrigger value="products">Sale Products</TabsTrigger>
-                <TabsTrigger value="stripe">Stripe Control</TabsTrigger>
               </TabsList>
 
               {/* Settings Tab */}
@@ -304,38 +285,11 @@ const AdminSale = () => {
                     </CardContent>
                   </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Zap className="h-5 w-5" />
-                        Sale Mode
-                      </CardTitle>
-                      <CardDescription>
-                        Enable or disable the entire sale across your store
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="sale-active">Activate Sale</Label>
-                        <Switch
-                          id="sale-active"
-                          checked={settings?.sale_active || false}
-                          onCheckedChange={(checked) => updateSettings({ sale_active: checked })}
-                        />
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {settings?.sale_active 
-                          ? "Sale prices are active and visible" 
-                          : "Sale prices are hidden from customers"}
-                      </p>
-                    </CardContent>
-                  </Card>
-
                   <Card className="md:col-span-2">
                     <CardHeader>
                       <CardTitle>Default Sale Message</CardTitle>
                       <CardDescription>
-                        Customize the default sale title and subtitle
+                        Customize the default sale title and description
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -351,12 +305,12 @@ const AdminSale = () => {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="sale-subtitle">Sale Subtitle</Label>
+                          <Label htmlFor="sale-description">Sale Description</Label>
                           <Input
-                            id="sale-subtitle"
-                            value={settings?.sale_subtitle || ""}
-                            onChange={(e) => setSettings(s => s ? { ...s, sale_subtitle: e.target.value } : null)}
-                            onBlur={() => updateSettings({ sale_subtitle: settings?.sale_subtitle })}
+                            id="sale-description"
+                            value={settings?.sale_description || ""}
+                            onChange={(e) => setSettings(s => s ? { ...s, sale_description: e.target.value } : null)}
+                            onBlur={() => updateSettings({ sale_description: settings?.sale_description })}
                             placeholder="Up to 50% OFF — Limited Time Only!"
                           />
                         </div>
@@ -392,55 +346,50 @@ const AdminSale = () => {
                           <TableRow>
                             <TableHead>Preview</TableHead>
                             <TableHead>Title</TableHead>
-                            <TableHead>CTA</TableHead>
+                            <TableHead>Link</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {banners.map((banner) => {
-                            const IconComponent = getIconComponent(banner.icon_type);
-                            return (
-                              <TableRow key={banner.id}>
-                                <TableCell>
-                                  <div className={`w-32 h-10 rounded bg-gradient-to-r ${banner.bg_gradient} flex items-center justify-center gap-2 text-white text-xs`}>
-                                    <IconComponent className="h-4 w-4" />
-                                    {banner.badge && (
-                                      <span className="px-1.5 py-0.5 bg-white text-slate-900 rounded text-[10px] font-bold">
-                                        {banner.badge}
-                                      </span>
-                                    )}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <div>
-                                    <p className="font-medium">{banner.title}</p>
-                                    <p className="text-xs text-muted-foreground truncate max-w-xs">
-                                      {banner.subtitle}
-                                    </p>
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge variant="outline">{banner.cta_text}</Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge variant={banner.active ? "default" : "secondary"}>
-                                    {banner.active ? "Active" : "Inactive"}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                  <div className="flex items-center justify-end gap-2">
-                                    <Button variant="ghost" size="sm" onClick={() => handleEditBanner(banner)}>
-                                      <Pencil className="h-4 w-4" />
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={() => handleDeleteBanner(banner)}>
-                                      <Trash2 className="h-4 w-4 text-destructive" />
-                                    </Button>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
+                          {banners.map((banner) => (
+                            <TableRow key={banner.id}>
+                              <TableCell>
+                                <div 
+                                  className="w-32 h-10 rounded flex items-center justify-center text-white text-xs"
+                                  style={{ backgroundColor: banner.background_color || '#ff5555' }}
+                                >
+                                  Preview
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  <p className="font-medium">{banner.title}</p>
+                                  <p className="text-xs text-muted-foreground truncate max-w-xs">
+                                    {banner.subtitle}
+                                  </p>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{banner.link_url || '/sale'}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={banner.active ? "default" : "secondary"}>
+                                  {banner.active ? "Active" : "Inactive"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  <Button variant="ghost" size="sm" onClick={() => handleEditBanner(banner)}>
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" onClick={() => handleDeleteBanner(banner)}>
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableBody>
                       </Table>
                     )}
@@ -448,124 +397,66 @@ const AdminSale = () => {
                 </Card>
               </TabsContent>
 
-              {/* Sale Products Tab */}
+              {/* Products Tab */}
               <TabsContent value="products">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Products on Sale</CardTitle>
+                    <CardTitle>Sale Products</CardTitle>
                     <CardDescription>
-                      Products with sale prices set ({saleProducts.length} products)
+                      Manage products that are currently on sale ({saleProducts.length} products)
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {saleProducts.length === 0 ? (
+                    {products.length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
-                        No products on sale. Set sale prices in the Products section.
+                        No products found. Add products first.
                       </div>
                     ) : (
                       <Table>
                         <TableHeader>
                           <TableRow>
                             <TableHead>Product</TableHead>
-                            <TableHead>Original Price</TableHead>
-                            <TableHead>Sale Price</TableHead>
-                            <TableHead>Discount</TableHead>
+                            <TableHead>Price</TableHead>
+                            <TableHead>Compare At</TableHead>
+                            <TableHead>On Sale</TableHead>
+                            <TableHead className="text-right">Toggle</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {saleProducts.map((product) => {
-                            const discount = product.sale_price 
-                              ? Math.round((1 - product.sale_price / product.price) * 100)
-                              : 0;
-                            return (
-                              <TableRow key={product.id}>
-                                <TableCell>
-                                  <div className="flex items-center gap-3">
-                                    <img
-                                      src={product.image_url || "/placeholder.svg"}
-                                      alt={product.name}
-                                      className="w-10 h-10 rounded object-cover"
-                                    />
-                                    <span className="font-medium">{product.name}</span>
-                                  </div>
-                                </TableCell>
-                                <TableCell className="text-muted-foreground line-through">
-                                  PKR {product.price.toLocaleString()}
-                                </TableCell>
-                                <TableCell className="font-semibold text-emerald-600">
-                                  PKR {product.sale_price?.toLocaleString()}
-                                </TableCell>
-                                <TableCell>
-                                  <Badge variant="destructive">{discount}% OFF</Badge>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
+                          {products.map((product) => (
+                            <TableRow key={product.id}>
+                              <TableCell>
+                                <div className="flex items-center gap-3">
+                                  <img 
+                                    src={product.image_url || '/placeholder.svg'} 
+                                    alt={product.name}
+                                    className="w-10 h-10 rounded object-cover"
+                                  />
+                                  <span className="font-medium">{product.name}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell>PKR {product.price.toLocaleString()}</TableCell>
+                              <TableCell>
+                                {product.compare_at_price 
+                                  ? `PKR ${product.compare_at_price.toLocaleString()}` 
+                                  : '-'}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={product.is_on_sale ? "default" : "secondary"}>
+                                  {product.is_on_sale ? "On Sale" : "Regular"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <Switch
+                                  checked={product.is_on_sale || false}
+                                  onCheckedChange={(checked) => toggleProductSale(product.id, checked)}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableBody>
                       </Table>
                     )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              {/* Stripe Control Tab */}
-              <TabsContent value="stripe">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CreditCard className="h-5 w-5" />
-                      Stripe Payment Control
-                    </CardTitle>
-                    <CardDescription>
-                      Enable or disable Stripe payments for individual products
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Product</TableHead>
-                          <TableHead>Price</TableHead>
-                          <TableHead>Stripe Enabled</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {products.map((product) => (
-                          <TableRow key={product.id}>
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                <img
-                                  src={product.image_url || "/placeholder.svg"}
-                                  alt={product.name}
-                                  className="w-10 h-10 rounded object-cover"
-                                />
-                                <span className="font-medium">{product.name}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {product.sale_price ? (
-                                <div className="flex flex-col">
-                                  <span className="text-sm text-muted-foreground line-through">
-                                    PKR {product.price.toLocaleString()}
-                                  </span>
-                                  <span className="font-semibold text-emerald-600">
-                                    PKR {product.sale_price.toLocaleString()}
-                                  </span>
-                                </div>
-                              ) : (
-                                <span>PKR {product.price.toLocaleString()}</span>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Switch
-                                checked={product.stripe_enabled}
-                                onCheckedChange={(checked) => toggleProductStripe(product.id, checked)}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -576,11 +467,9 @@ const AdminSale = () => {
 
       {/* Banner Dialog */}
       <Dialog open={showBannerDialog} onOpenChange={setShowBannerDialog}>
-        <DialogContent className="max-w-lg">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {selectedBanner ? "Edit Banner" : "Add New Banner"}
-            </DialogTitle>
+            <DialogTitle>{selectedBanner ? "Edit Banner" : "Add New Banner"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSaveBanner} className="space-y-4">
             <div className="space-y-2">
@@ -593,90 +482,44 @@ const AdminSale = () => {
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="banner-subtitle">Subtitle</Label>
               <Input
                 id="banner-subtitle"
                 value={bannerFormData.subtitle}
                 onChange={(e) => setBannerFormData({ ...bannerFormData, subtitle: e.target.value })}
-                placeholder="Up to 50% OFF — Limited Time Only!"
+                placeholder="Up to 50% off!"
               />
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="cta-text">Button Text</Label>
+                <Label htmlFor="banner-bg">Background Color</Label>
                 <Input
-                  id="cta-text"
-                  value={bannerFormData.cta_text}
-                  onChange={(e) => setBannerFormData({ ...bannerFormData, cta_text: e.target.value })}
-                  placeholder="Shop Now"
+                  id="banner-bg"
+                  type="color"
+                  value={bannerFormData.background_color}
+                  onChange={(e) => setBannerFormData({ ...bannerFormData, background_color: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="cta-link">Button Link</Label>
+                <Label htmlFor="banner-text">Text Color</Label>
                 <Input
-                  id="cta-link"
-                  value={bannerFormData.cta_link}
-                  onChange={(e) => setBannerFormData({ ...bannerFormData, cta_link: e.target.value })}
-                  placeholder="/sale"
+                  id="banner-text"
+                  type="color"
+                  value={bannerFormData.text_color}
+                  onChange={(e) => setBannerFormData({ ...bannerFormData, text_color: e.target.value })}
                 />
               </div>
             </div>
-
             <div className="space-y-2">
-              <Label htmlFor="badge">Badge (optional)</Label>
+              <Label htmlFor="banner-link">Link URL</Label>
               <Input
-                id="badge"
-                value={bannerFormData.badge}
-                onChange={(e) => setBannerFormData({ ...bannerFormData, badge: e.target.value })}
-                placeholder="HOT, NEW, LIMITED, etc."
+                id="banner-link"
+                value={bannerFormData.link_url}
+                onChange={(e) => setBannerFormData({ ...bannerFormData, link_url: e.target.value })}
+                placeholder="/sale"
               />
             </div>
-
-            <div className="space-y-2">
-              <Label>Icon</Label>
-              <div className="grid grid-cols-6 gap-2">
-                {iconOptions.map((option) => {
-                  const IconComp = option.icon;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => setBannerFormData({ ...bannerFormData, icon_type: option.value })}
-                      className={`p-3 rounded-lg border-2 transition-all ${
-                        bannerFormData.icon_type === option.value
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <IconComp className="h-5 w-5 mx-auto" />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Background Gradient</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {gradientOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => setBannerFormData({ ...bannerFormData, bg_gradient: option.value })}
-                    className={`h-10 rounded-lg ${option.preview} border-2 transition-all ${
-                      bannerFormData.bg_gradient === option.value
-                        ? "border-foreground ring-2 ring-primary"
-                        : "border-transparent"
-                    }`}
-                    title={option.label}
-                  />
-                ))}
-              </div>
-            </div>
-
             <div className="flex items-center justify-between">
               <Label htmlFor="banner-active">Active</Label>
               <Switch
@@ -685,27 +528,6 @@ const AdminSale = () => {
                 onCheckedChange={(active) => setBannerFormData({ ...bannerFormData, active })}
               />
             </div>
-
-            {/* Preview */}
-            <div className="space-y-2">
-              <Label>Preview</Label>
-              <div className={`rounded-lg bg-gradient-to-r ${bannerFormData.bg_gradient} p-4 text-white text-center`}>
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  {(() => {
-                    const IconComp = getIconComponent(bannerFormData.icon_type);
-                    return <IconComp className="h-5 w-5" />;
-                  })()}
-                  {bannerFormData.badge && (
-                    <span className="px-2 py-0.5 bg-white text-slate-900 rounded text-xs font-bold">
-                      {bannerFormData.badge}
-                    </span>
-                  )}
-                </div>
-                <p className="font-bold">{bannerFormData.title || "Banner Title"}</p>
-                <p className="text-sm opacity-90">{bannerFormData.subtitle || "Banner subtitle text"}</p>
-              </div>
-            </div>
-
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setShowBannerDialog(false)}>
                 Cancel
@@ -722,7 +544,7 @@ const AdminSale = () => {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Banner?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This will permanently delete the banner "{selectedBanner?.title}". This action cannot be undone.
             </AlertDialogDescription>

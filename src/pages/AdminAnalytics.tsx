@@ -60,7 +60,7 @@ const AdminAnalytics = () => {
         .slice(0, 5);
 
       // Calculate revenue and orders by status
-      const totalRevenue = orders?.reduce((sum, order) => sum + order.total_amount, 0) || 0;
+      const totalRevenue = orders?.reduce((sum, order) => sum + (order.total || 0), 0) || 0;
       const totalOrders = orders?.length || 0;
       const pendingOrders = orders?.filter((o) => o.status === "pending").length || 0;
       const completedOrders = orders?.filter((o) => o.status === "delivered").length || 0;

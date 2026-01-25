@@ -75,7 +75,7 @@ const AdminCustomers = () => {
     if (!orders || orders.length === 0) return { totalOrders: 0, totalSpent: 0, avgOrderValue: 0 };
 
     const totalOrders = orders.length;
-    const totalSpent = orders.reduce((sum, order) => sum + order.total_amount, 0);
+    const totalSpent = orders.reduce((sum, order) => sum + (order.total || 0), 0);
     const avgOrderValue = totalSpent / totalOrders;
 
     return { totalOrders, totalSpent, avgOrderValue };
@@ -146,7 +146,7 @@ const AdminCustomers = () => {
                         {customer.city && (
                           <div className="flex items-center gap-1">
                             <MapPin className="h-4 w-4" />
-                            <span>{customer.city}, {customer.state}</span>
+                            <span>{customer.city}{customer.country ? `, ${customer.country}` : ''}</span>
                           </div>
                         )}
                       </div>
@@ -289,7 +289,7 @@ const AdminCustomers = () => {
                           <div className="border-t pt-2">
                             <div className="flex justify-between font-semibold">
                               <span>Total</span>
-                              <span>${order.total_amount.toFixed(2)}</span>
+                              <span>${(order.total || 0).toFixed(2)}</span>
                             </div>
                           </div>
                         </CardContent>

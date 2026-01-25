@@ -24,14 +24,15 @@ import {
 type Product = {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   price: number;
-  sale_price?: number | null;
-  category: string;
+  compare_at_price?: number | null;
+  category: string | null;
   stock: number;
-  image_url?: string;
-  is_featured: boolean;
-  is_new_arrival: boolean;
+  image_url?: string | null;
+  is_featured: boolean | null;
+  is_new: boolean | null;
+  is_on_sale: boolean | null;
   created_at?: string;
 };
 
@@ -387,13 +388,13 @@ const AdminProducts = () => {
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex flex-col">
-                            {product.sale_price ? (
+                            {product.compare_at_price && product.compare_at_price > product.price ? (
                               <>
                                 <span className="text-sm text-muted-foreground line-through">
-                                  PKR {product.price.toLocaleString()}
+                                  PKR {product.compare_at_price.toLocaleString()}
                                 </span>
                                 <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                                  PKR {product.sale_price.toLocaleString()}
+                                  PKR {product.price.toLocaleString()}
                                 </span>
                               </>
                             ) : (
