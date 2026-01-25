@@ -8,37 +8,37 @@ const AboutUs = () => {
   const values = [
     {
       icon: Heart,
-      title: "Passion for Quality",
-      description: "Every piece is carefully selected and crafted with attention to detail and superior materials."
+      title: "Passion for Perfumery",
+      description: "Every fragrance is meticulously crafted with the finest ingredients sourced from around the world."
     },
     {
       icon: Award,
-      title: "Timeless Design",
-      description: "We believe in creating pieces that transcend trends and remain elegant season after season."
+      title: "Timeless Elegance",
+      description: "We create scents that transcend trends, becoming signature fragrances you'll cherish for years."
     },
     {
       icon: Users,
-      title: "Community First",
-      description: "Our customers are at the heart of everything we do, building lasting relationships beyond transactions."
+      title: "Scent Community",
+      description: "Our customers are fragrance enthusiasts who share our passion for olfactory artistry."
     },
     {
       icon: Globe,
-      title: "Sustainable Future",
-      description: "Committed to ethical practices and environmental responsibility in every step of our process."
+      title: "Sustainable Sourcing",
+      description: "Committed to ethical ingredient sourcing and eco-conscious packaging in every bottle."
     }
   ];
 
   return (
     <div className="min-h-screen flex flex-col">
       <SEOHead
-        title="About Us | LUXE Premium Fashion"
-        description="Learn about LUXE's story, our passion for quality fashion, and commitment to timeless design. Redefining modern fashion with elegance since 2020."
-        keywords="about luxe, fashion brand story, luxury fashion company, sustainable fashion"
+        title="About Us | SCENT LUXE Premium Fragrances"
+        description="Discover the story behind SCENT LUXE, our passion for artisanal perfumery, and commitment to creating unforgettable fragrances since 2020."
+        keywords="about scent luxe, fragrance brand story, luxury perfume company, artisanal perfumery"
         canonicalUrl="/about"
         structuredData={generateWebPageSchema({
-          name: "About LUXE Premium Fashion",
-          description: "Redefining modern fashion with timeless elegance and uncompromising quality since 2020.",
-          url: "https://luxurious-store.vercel.app/about",
+          name: "About SCENT LUXE Premium Fragrances",
+          description: "Crafting exquisite fragrances that captivate the senses and tell unique olfactory stories since 2020.",
+          url: "https://scentluxe.com/about",
         })}
       />
       <Navigation />
@@ -46,9 +46,9 @@ const AboutUs = () => {
       {/* Hero Section */}
       <section className="hero-gradient py-20 border-b">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl mb-6">About LUXE</h1>
+          <h1 className="text-5xl md:text-6xl font-serif mb-6">About SCENT LUXE</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Redefining modern fashion with timeless elegance and uncompromising quality since 2020.
+            Crafting exquisite fragrances that captivate the senses and tell unique olfactory stories since 2020.
           </p>
         </div>
       </section>
@@ -56,20 +56,21 @@ const AboutUs = () => {
       {/* Story Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold mb-8 text-center">Our Story</h2>
+          <h2 className="text-4xl font-serif font-bold mb-8 text-center">Our Story</h2>
           <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
             <p>
-              Founded in 2020, LUXE emerged from a simple vision: to create a fashion destination where 
-              quality meets accessibility, and style transcends fleeting trends.
+              Founded in 2020, SCENT LUXE emerged from a profound passion for the art of perfumery — 
+              a desire to create fragrances that evoke emotion, memory, and timeless elegance.
             </p>
             <p>
-              What began as a small boutique has grown into a beloved brand trusted by thousands 
-              worldwide. Our journey has been guided by an unwavering commitment to craftsmanship, 
-              sustainability, and the belief that everyone deserves to feel confident in what they wear.
+              What began as a small atelier has blossomed into a beloved fragrance house trusted by 
+              discerning customers worldwide. Our journey is guided by an unwavering commitment to 
+              artisanal craftsmanship, sustainable sourcing, and the belief that everyone deserves 
+              to find their signature scent.
             </p>
             <p>
-              Today, we partner with artisans and manufacturers who share our values, ensuring every 
-              piece in our collection meets the highest standards of quality and ethical production.
+              Today, we collaborate with master perfumers and source the finest ingredients from 
+              around the globe, ensuring every bottle captures the essence of luxury and sophistication.
             </p>
           </div>
         </div>
@@ -78,7 +79,7 @@ const AboutUs = () => {
       {/* Values Section */}
       <section className="bg-muted/30 py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-12 text-center">Our Values</h2>
+          <h2 className="text-4xl font-serif font-bold mb-12 text-center">Our Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
               <Card key={index} className="p-6 text-center">
@@ -96,17 +97,21 @@ const AboutUs = () => {
       {/* Team Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-4xl font-bold mb-6">Meet Our Team</h2>
+          <h2 className="text-4xl font-serif font-bold mb-6">Meet Our Artisans</h2>
           <p className="text-lg text-muted-foreground mb-12">
-            Behind LUXE is a passionate team of designers, stylists, and fashion enthusiasts 
-            dedicated to bringing you the best in contemporary fashion.
+            Behind SCENT LUXE is a passionate team of perfumers, scent specialists, and fragrance 
+            enthusiasts dedicated to crafting extraordinary olfactory experiences.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
+            {[
+              { name: "Master Perfumer", role: "Creative Director" },
+              { name: "Scent Curator", role: "Product Development" },
+              { name: "Fragrance Expert", role: "Customer Experience" },
+            ].map((member, i) => (
               <div key={i} className="space-y-3">
                 <div className="aspect-square bg-muted rounded-lg"></div>
-                <h4 className="font-semibold text-lg">Team Member {i}</h4>
-                <p className="text-sm text-muted-foreground">Position Title</p>
+                <h4 className="font-semibold text-lg">{member.name}</h4>
+                <p className="text-sm text-muted-foreground">{member.role}</p>
               </div>
             ))}
           </div>

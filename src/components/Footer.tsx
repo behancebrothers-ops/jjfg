@@ -27,11 +27,11 @@ export const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <h3 className="text-2xl font-bold tracking-tighter mb-4">
-              <span className="text-gradient">LUXE</span>
+            <h3 className="text-2xl font-bold tracking-tighter mb-4 font-serif">
+              <span className="text-gradient">SCENT LUXE</span>
             </h3>
             <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-              Premium fashion for the modern lifestyle. Elevating your everyday look with timeless essentials.
+              Premium fragrances for the modern connoisseur. Elevate your presence with our curated collection of luxurious scents.
             </p>
             <div className="flex gap-4">
               <a
@@ -70,13 +70,13 @@ export const Footer = () => {
             <h4 className="font-semibold mb-4 text-foreground">Shop</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link to="/products?category=men" className="hover:text-primary transition-colors hover-lift inline-block">
-                  Men
+                <Link to="/products?category=perfumes" className="hover:text-primary transition-colors hover-lift inline-block">
+                  Perfumes
                 </Link>
               </li>
               <li>
-                <Link to="/products?category=women" className="hover:text-primary transition-colors hover-lift inline-block">
-                  Women
+                <Link to="/products?category=home-scents" className="hover:text-primary transition-colors hover-lift inline-block">
+                  Home Fragrances
                 </Link>
               </li>
               <li>
@@ -85,8 +85,8 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/products?category=sale" className="hover:text-primary transition-colors hover-lift inline-block">
-                  Sale
+                <Link to="/products?category=gift-sets" className="hover:text-primary transition-colors hover-lift inline-block">
+                  Gift Sets
                 </Link>
               </li>
             </ul>
@@ -117,8 +117,8 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/size-guide" className="hover:text-primary transition-colors hover-lift inline-block">
-                  Size Guide
+                <Link to="/faq" className="hover:text-primary transition-colors hover-lift inline-block">
+                  Scent Guide
                 </Link>
               </li>
               <li>
@@ -187,7 +187,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 LUXE. All rights reserved.</p>
+          <p>© 2025 SCENT LUXE. All rights reserved.</p>
         </div>
       </div>
     </footer>
