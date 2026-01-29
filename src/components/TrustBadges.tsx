@@ -26,7 +26,7 @@ export const TrustBadges = () => {
   ];
 
   return (
-    <section className="bg-gradient-to-r from-amber-50 via-orange-50/50 to-pink-50 border-y border-border/50 py-12">
+    <section className="bg-card border-y border-border/50 py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {badges.map((badge, index) => (
@@ -38,7 +38,7 @@ export const TrustBadges = () => {
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="mb-4 p-3 rounded-full bg-gradient-to-br from-amber-100 to-pink-100 text-primary shadow-md">
+              <div className="mb-4 p-3 rounded-full bg-primary/10 text-primary shadow-md border border-primary/20">
                 {badge.icon}
               </div>
               <h3 className="font-semibold text-foreground mb-1">{badge.title}</h3>
