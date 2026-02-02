@@ -29,35 +29,35 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   tag: Tag,
 };
 
-// Fallback banners if no database banners exist
+// Fallback banners with luxury dark gold theme
 const defaultPromos: PromoBanner[] = [
   {
     id: "1",
-    title: "Flash Sale",
-    subtitle: "Up to 50% OFF — Limited Time Only!",
+    title: "Exclusive Collection",
+    subtitle: "Discover our signature fragrances — Limited Edition",
     image_url: null,
     link_url: "/sale",
-    background_color: "from-red-500 via-orange-500 to-amber-500",
+    background_color: null,
     text_color: null,
     position: 0,
   },
   {
     id: "2",
-    title: "New Season Collection",
-    subtitle: "Fresh styles just dropped — Be the first to shop",
+    title: "New Arrivals",
+    subtitle: "Fresh scents just dropped — Be the first to experience",
     image_url: null,
     link_url: "/new-arrivals",
-    background_color: "from-pink-500 via-purple-500 to-indigo-500",
+    background_color: null,
     text_color: null,
     position: 1,
   },
   {
     id: "3",
-    title: "Free Shipping",
-    subtitle: "On all orders over PKR 5,000 — No code needed",
+    title: "Complimentary Shipping",
+    subtitle: "On all orders over $100 — No code needed",
     image_url: null,
     link_url: "/products",
-    background_color: "from-emerald-500 via-teal-500 to-cyan-500",
+    background_color: null,
     text_color: null,
     position: 2,
   }
@@ -163,7 +163,6 @@ export const PromoBannerSlider = () => {
   }
 
   const currentPromo = promos[currentIndex];
-  const bgGradient = currentPromo.background_color || "from-amber-500 to-pink-500";
 
   return (
     <div 
@@ -178,11 +177,11 @@ export const PromoBannerSlider = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.4 }}
-          className={`relative bg-gradient-to-r ${bgGradient} py-3 sm:py-4`}
+          className="relative bg-gradient-to-r from-primary/90 via-primary to-accent/80 py-3 sm:py-4"
         >
           {/* Background pattern */}
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,white_1px,transparent_1px)] bg-[length:20px_20px]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--primary-foreground))_1px,transparent_1px)] bg-[length:20px_20px]" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
@@ -191,7 +190,7 @@ export const PromoBannerSlider = () => {
               {promos.length > 1 && (
                 <button
                   onClick={prevSlide}
-                  className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors text-white"
+                  className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors text-primary-foreground"
                   aria-label="Previous promotion"
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -202,18 +201,18 @@ export const PromoBannerSlider = () => {
               <div className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-center sm:text-left">
                 {/* Icon */}
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 text-white">
-                    <Zap className="h-6 w-6" />
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-foreground/20 text-primary-foreground">
+                    <Sparkles className="h-5 w-5" />
                   </div>
                 </div>
 
                 {/* Text */}
                 <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
-                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-white whitespace-nowrap">
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-primary-foreground font-serif tracking-wide whitespace-nowrap">
                     {currentPromo.title}
                   </h3>
-                  <span className="hidden sm:block text-white/60">|</span>
-                  <p className="text-xs sm:text-sm text-white/90 line-clamp-1">
+                  <span className="hidden sm:block text-primary-foreground/50">|</span>
+                  <p className="text-xs sm:text-sm text-primary-foreground/90 line-clamp-1 font-sans">
                     {currentPromo.subtitle}
                   </p>
                 </div>
@@ -223,7 +222,7 @@ export const PromoBannerSlider = () => {
                   <Link to={currentPromo.link_url}>
                     <Button
                       size="sm"
-                      className="bg-white text-slate-900 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all text-xs sm:text-sm px-4 py-1.5 rounded-full group"
+                      className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold shadow-md hover:shadow-lg transition-all text-xs sm:text-sm px-4 py-1.5 rounded-full group"
                     >
                       Shop Now
                       <ChevronRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
@@ -236,7 +235,7 @@ export const PromoBannerSlider = () => {
               {promos.length > 1 && (
                 <button
                   onClick={nextSlide}
-                  className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors text-white"
+                  className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors text-primary-foreground"
                   aria-label="Next promotion"
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -253,8 +252,8 @@ export const PromoBannerSlider = () => {
                     onClick={() => setCurrentIndex(index)}
                     className={`transition-all duration-300 rounded-full ${
                       index === currentIndex
-                        ? "w-6 h-1.5 bg-white"
-                        : "w-1.5 h-1.5 bg-white/40 hover:bg-white/60"
+                        ? "w-6 h-1.5 bg-primary-foreground"
+                        : "w-1.5 h-1.5 bg-primary-foreground/40 hover:bg-primary-foreground/60"
                     }`}
                     aria-label={`Go to promotion ${index + 1}`}
                   />
@@ -266,7 +265,7 @@ export const PromoBannerSlider = () => {
           {/* Timer indicator */}
           {!isPaused && promos.length > 1 && (
             <motion.div
-              className="absolute bottom-0 left-0 h-0.5 bg-white/50"
+              className="absolute bottom-0 left-0 h-0.5 bg-primary-foreground/50"
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
               transition={{ duration: 5, ease: "linear" }}
