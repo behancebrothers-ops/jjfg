@@ -382,34 +382,34 @@ const Index = () => {
         </section>
 
         {/* NEWSLETTER */}
-        <section className="py-20 sm:py-28 bg-gradient-to-b from-primary/5 to-accent/5">
+        <section className="py-20 sm:py-28 gradient-warm">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              className="max-w-3xl mx-auto bg-white/80 backdrop-blur-lg p-8 sm:p-12 rounded-2xl shadow-xl border border-border/50 text-center"
+              className="max-w-3xl mx-auto glass-card p-8 sm:p-12 rounded-2xl shadow-xl text-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
               <motion.div
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold shadow-sm mb-6"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 text-primary font-semibold shadow-sm mb-6 border border-primary/20"
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
                 transition={{ type: "spring", delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                <Sparkles className="w-4 h-4 text-accent" />
-                Newsletter
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="font-sans">Newsletter</span>
               </motion.div>
 
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">
                 Join the{" "}
-                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <span className="text-gradient-gold">
                   Scent Circle
                 </span>
               </h2>
 
-              <p className="text-muted-foreground mb-8 text-base sm:text-lg max-w-lg mx-auto">
+              <p className="text-muted-foreground mb-8 text-base sm:text-lg max-w-lg mx-auto font-sans">
                 Exclusive launches, fragrance tips, and special offers — delivered straight to your inbox.
               </p>
 
@@ -421,19 +421,19 @@ const Index = () => {
                   type="email"
                   name="email"
                   placeholder="you@email.com"
-                  className="flex-1 px-5 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-muted-foreground"
+                  className="flex-1 px-5 py-3 rounded-xl border border-border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-muted-foreground font-sans"
                   required
                 />
                 <Button
                   type="submit"
                   size="lg"
-                  className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-md hover:shadow-lg transition-all px-6 rounded-xl font-semibold"
+                  className="btn-gold text-primary-foreground shadow-md hover:shadow-lg transition-all px-6 rounded-xl font-semibold font-sans"
                 >
                   Subscribe
                 </Button>
               </form>
 
-              <p className="text-xs text-muted-foreground mt-4">
+              <p className="text-xs text-muted-foreground mt-4 font-sans">
                 No spam. Pure elegance. Unsubscribe anytime.
               </p>
             </motion.div>
