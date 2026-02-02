@@ -19,8 +19,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ['Cormorant Garamond', 'Georgia', 'Times New Roman', 'serif'],
-        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        serif: ['Playfair Display', 'Georgia', 'Times New Roman', 'serif'],
+        sans: ['Lato', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['Playfair Display', 'Georgia', 'serif'],
+        body: ['Lato', 'Helvetica Neue', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -97,33 +99,51 @@ export default {
         },
         // Mist/fragrance diffusion animation
         mist: {
-          "0%, 100%": { opacity: "0.7", transform: "translateY(0) scale(1)" },
-          "50%": { opacity: "1", transform: "translateY(-8px) scale(1.02)" },
+          "0%, 100%": { opacity: "0.75", transform: "translateY(0) scale(1)" },
+          "50%": { opacity: "1", transform: "translateY(-6px) scale(1.015)" },
         },
         // Subtle pulse for call-to-actions
         "pulse-soft": {
           "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.7" },
+          "50%": { opacity: "0.75" },
         },
         // Shimmer effect for luxury elements
         shimmer: {
           "0%": { transform: "translateX(-100%) rotate(45deg)" },
           "100%": { transform: "translateX(100%) rotate(45deg)" },
         },
+        // Float animation
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        // Fade in animation
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        // Scale in animation
+        "scale-in": {
+          "0%": { opacity: "0", transform: "scale(0.94)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         gradient: "gradient 8s linear infinite",
-        mist: "mist 6s ease-in-out infinite",
-        "pulse-soft": "pulse-soft 3s ease-in-out infinite",
-        shimmer: "shimmer 3s ease-in-out infinite",
+        mist: "mist 7s ease-in-out infinite",
+        "pulse-soft": "pulse-soft 3.5s ease-in-out infinite",
+        shimmer: "shimmer 4s ease-in-out infinite",
+        float: "float 5s ease-in-out infinite",
+        "fade-in": "fade-in 0.8s ease-out",
+        "scale-in": "scale-in 0.5s ease-out",
       },
       boxShadow: {
-        'glow': '0 0 40px hsl(270 45% 45% / 0.25)',
-        'glow-lg': '0 0 50px hsl(270 55% 60% / 0.35)',
-        'gold': '0 4px 30px hsl(42 75% 55% / 0.3)',
-        'soft': '0 4px 24px hsl(42 60% 50% / 0.15)',
+        'glow': '0 0 45px hsl(38 55% 50% / 0.22)',
+        'glow-lg': '0 0 55px hsl(38 60% 55% / 0.35)',
+        'gold': '0 6px 35px hsl(38 55% 50% / 0.28)',
+        'soft': '0 4px 28px hsl(38 45% 40% / 0.12)',
       },
     },
   },
